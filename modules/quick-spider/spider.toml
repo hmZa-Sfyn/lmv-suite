@@ -1,7 +1,8 @@
 # Quick-Spider Results
-# Target: http://www.shortpornvids.com
-# Discovered: 1
+# Target: http://vulnweb.com
+# Discovered: 2
 
 urls = [
-  {url = "http://www.shortpornvids.com", type = "[PAGE]"},
+  {url = "http://vulnweb.com", type = "[PAGE]"},
+  {url = "http://vulnweb.com/acunetix-logo.png", type = "[IMG]"},
 ]
