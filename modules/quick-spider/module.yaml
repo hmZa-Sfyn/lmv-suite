@@ -1,0 +1,27 @@
+name: quick-spider
+description: "Simple single-threaded web crawler - lists pages/files with types, saves to TOML progressively"
+type: python
+author: LanManVan Team & Grok
+version: 3.0.0
+tags:
+  - web
+  - crawler
+  - simple
+  - reconnaissance
+options:
+  url:
+    type: string
+    description: Target URL (e.g. http://testphp.vulnweb.com)
+    required: true
+  depth:
+    type: integer
+    description: Max crawl depth
+    required: false
+    default: 2
+  output:
+    type: string
+    description: Output TOML file
+    required: false
+    default: spider.toml
+required:
+  - url

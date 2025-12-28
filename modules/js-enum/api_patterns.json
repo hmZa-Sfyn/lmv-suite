@@ -1,0 +1,15 @@
+{
+  "OpenAI": "sk-[a-zA-Z0-9]{48}",
+  "Gemini/Google AI": "AIza[0-9A-Za-z\\\\-_]{35}",
+  "DeepSeek": "sk-[a-z0-9]{32}",
+  "Leonardo AI": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
+  "AWS Access Key": "AKIA[0-9A-Z]{16}",
+  "AWS Secret Key": "[0-9a-zA-Z/+]{40}",
+  "Stripe Live": "sk_live_[0-9a-zA-Z]{24}",
+  "GitHub PAT": "ghp_[0-9a-zA-Z]{36}",
+  "Supabase Anon": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\\\\.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6I[a-zA-Z0-9_-]{15,}",
+  "JWT Token": "eyJ[A-Za-z0-9_-]{10,}\\\\.[A-Za-z0-9_-]{10,}\\\\.[A-Za-z0-9_-]{10,}",
+  "Bearer Token": "(?i)bearer[\\\\s]+eyJ[A-Za-z0-9_-]{10,}\\\\.[A-Za-z0-9_-]{10,}\\\\.[A-Za-z0-9_-]{10,}",
+  "Generic API Key": "(?i)(api[_-]?key|apikey)[\\'\"\\\\s:=]+[a-zA-Z0-9\\\\-_]{20,}",
+  "Hard-coded Var": "(?i)(GEMINI_API_KEY|DEEPSEEK_API_KEY|LEONARDO_API_KEY|OPENAI_API_KEY|API_KEY|SECRET)[^:]*?:\\\\s*[\"'][a-zA-Z0-9\\\\-_]{20,}[\"']"
+}
