@@ -1,0 +1,2 @@
+# Ignore only directories that start with an underscore
+^_*/
