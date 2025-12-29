@@ -120,7 +120,7 @@ func (mm *ModuleManager) ExecuteModule(moduleName string, args map[string]string
 	case "go":
 		return executeGoModule(module, args)
 	default:
-		return nil, fmt.Errorf("unsupported module type: %s, supported types are: python, bash, go", module.Type)
+		return nil, fmt.Errorf("unsupported module type: %s, supported types are: python, bash", module.Type)
 	}
 }
 
@@ -225,7 +225,7 @@ func executeGoModule(module *ModuleConfig, args map[string]string) (*ExecutionRe
 	result := &ExecutionResult{
 		Timestamp: time.Now(),
 		Success:   false,
-		Error:     "Go module execution not yet implemented",
+		Error:     "Go module execution not yet implemented, please build and run manually, thanks!",
 		ExitCode:  1,
 	}
 	return result, nil

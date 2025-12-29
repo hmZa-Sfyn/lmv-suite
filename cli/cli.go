@@ -84,7 +84,7 @@ func (cli *CLI) ExecuteCommand(input string) {
 					fmt.Printf("   %s = %s\n", core.Color("cyan", key), core.Color("green", val))
 					fmt.Println()
 				} else {
-					core.PrintWarning(fmt.Sprintf("Environment variable '%s' not set", key))
+					core.PrintWarning(fmt.Sprintf("Environment variable '%s' not set, skipping...", key))
 					fmt.Println()
 				}
 				return
@@ -92,7 +92,7 @@ func (cli *CLI) ExecuteCommand(input string) {
 
 			// Set environment variable
 			if err := cli.envMgr.Set(key, value); err != nil {
-				core.PrintError(fmt.Sprintf("Failed to set environment variable: %v", err))
+				core.PrintError(fmt.Sprintf("Failed to set environment variable: %v, skipping...", err))
 				return
 			}
 			fmt.Println()
@@ -127,37 +127,37 @@ func (cli *CLI) ExecuteCommand(input string) {
 		if len(args) > 0 {
 			cli.SearchModules(strings.Join(args, " "))
 		} else {
-			core.PrintError("Usage: search <keyword>")
+			core.PrintError("Usage: search <keyword> ... example: search network")
 		}
 	case "info":
 		if len(args) > 0 {
 			cli.ShowModuleInfo(args[0])
 		} else {
-			core.PrintError("Usage: info <module_name>")
+			core.PrintError("Usage: info <module_name> ... example: info network")
 		}
 	case "run":
 		if len(args) > 0 {
 			cli.RunModule(args[0], args[1:])
 		} else {
-			core.PrintError("Usage: run <module_name> [args...]")
+			core.PrintError("Usage: run <module_name> [args...] ... example: run network target_network=$target_network_suffix port=80")
 		}
 	case "create", "new":
 		if len(args) > 0 {
 			cli.CreateModule(args[0], args[1:])
 		} else {
-			core.PrintError("Usage: create <module_name> [python|bash]")
+			core.PrintError("Usage: create <module_name> [python|bash] ... example: create mymodule python")
 		}
 	case "edit":
 		if len(args) > 0 {
 			cli.EditModule(args[0])
 		} else {
-			core.PrintError("Usage: edit <module_name>")
+			core.PrintError("Usage: edit <module_name> ... example: edit mymodule")
 		}
 	case "delete", "remove", "rm":
 		if len(args) > 0 {
 			cli.DeleteModule(args[0])
 		} else {
-			core.PrintError("Usage: delete <module_name>")
+			core.PrintError("Usage: delete <module_name> ... example: delete mymodule")
 		}
 	case "history":
 		cli.PrintHistory()
@@ -166,7 +166,7 @@ func (cli *CLI) ExecuteCommand(input string) {
 	case "exit", "quit", "q":
 		cli.running = false
 		fmt.Println()
-		core.PrintSuccess("Goodbye! 👋")
+		core.PrintSuccess("Goodbye! See you next time.")
 		fmt.Println()
 	default:
 		// Check if command ends with ! (show module info)

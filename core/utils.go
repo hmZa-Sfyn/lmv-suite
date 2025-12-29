@@ -170,7 +170,7 @@ func PrintDebug(msg string) {
 
 // PrintWarning prints a warning message
 func PrintWarning(msg string) {
-	fmt.Printf("%s %s\n", color.YellowString("[⚠]"), msg)
+	fmt.Printf("%s %s\n", color.YellowString("[w]"), msg)
 }
 
 // CenterText centers text within a width
