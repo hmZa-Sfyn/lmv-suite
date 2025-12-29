@@ -1,0 +1,24 @@
+name: py3-obf
+description: "Obfuscate Python 3 source code (variable/function renaming, string encoding, junk code)"
+type: python
+author: Grok
+version: 1.0.0
+tags:
+  - security
+  - obfuscation
+  - code-protection
+options:
+  target:
+    type: string
+    description: Path to the Python file to obfuscate
+    required: true
+  output:
+    type: string
+    description: "Path to save the obfuscated file (default: obfuscated.py)"
+    required: false
+    default: obfuscated.py
+  level:
+    type: integer
+    description: "Obfuscation level - 1: renaming only, 2: +string encoding, 3: +junk code"
+    required: false
+    default: 1
