@@ -79,14 +79,14 @@ func (cli *CLI) RunModule(moduleName string, args []string) {
 		// If required arguments are missing, show usage info
 		if len(missingArgs) > 0 {
 			fmt.Println()
-			core.PrintWarning(fmt.Sprintf("Module '%s' requires arguments", moduleName))
+			core.PrintWarning(fmt.Sprintf("Module '%s' requires arguments, skipping...", moduleName))
 			fmt.Println()
 			fmt.Println(core.NmapBox(fmt.Sprintf("MODULE: %s - USAGE", moduleName)))
 			fmt.Printf("   Description: %s\n\n", module.Metadata.Description)
 			fmt.Println("   Required Arguments:")
 			for _, opt := range missingArgs {
 				if optMeta, exists := module.Metadata.Options[opt]; exists {
-					fmt.Printf("      • %s (%s) - %s\n", opt, optMeta.Type, optMeta.Description)
+					fmt.Printf("      * %s (%s) - %s\n", opt, optMeta.Type, optMeta.Description)
 				}
 			}
 
@@ -166,9 +166,9 @@ func (cli *CLI) RunModule(moduleName string, args []string) {
 	// Print simple result log
 	fmt.Println()
 	if result.Success {
-		core.PrintSuccess(fmt.Sprintf("Completed in %s [exit: %d]", duration.String(), result.ExitCode))
+		core.PrintSuccess(fmt.Sprintf("Completed in %s [exit: %d], success!", duration.String(), result.ExitCode))
 	} else {
-		core.PrintError(fmt.Sprintf("Failed in %s [exit: %d]", duration.String(), result.ExitCode))
+		core.PrintError(fmt.Sprintf("Failed in %s [exit: %d], skipping...", duration.String(), result.ExitCode))
 	}
 	fmt.Println()
 }
@@ -193,7 +193,7 @@ func (cli *CLI) runModuleThreaded(moduleName string, args map[string]string, thr
 			result, _ := cli.manager.ExecuteModule(moduleName, args)
 			if result != nil {
 				mu.Lock()
-				outputs = append(outputs, fmt.Sprintf("[Thread %d] %s", threadID, result.Output))
+				outputs = append(outputs, fmt.Sprintf("[Thread : %d] %s", threadID, result.Output))
 				mu.Unlock()
 			}
 			results <- result
@@ -233,7 +233,7 @@ func (cli *CLI) CreateModule(moduleName string, args []string) {
 	}
 
 	if moduleType != "python" && moduleType != "bash" {
-		core.PrintError("Invalid type. Use 'python' or 'bash'")
+		core.PrintError("Invalid type. Use 'python' or 'bash', default is 'python'")
 		return
 	}
 
@@ -241,13 +241,13 @@ func (cli *CLI) CreateModule(moduleName string, args []string) {
 
 	// Check if already exists
 	if _, err := os.Stat(moduleDir); err == nil {
-		core.PrintError(fmt.Sprintf("Module '%s' already exists", moduleName))
+		core.PrintError(fmt.Sprintf("Module '%s' already exists, skipping...", moduleName))
 		return
 	}
 
 	// Create directory
 	if err := os.MkdirAll(moduleDir, 0755); err != nil {
-		core.PrintError(fmt.Sprintf("Failed to create module directory: %v", err))
+		core.PrintError(fmt.Sprintf("Failed to create module directory: %v, skipping...", err))
 		return
 	}
 
@@ -335,7 +335,7 @@ echo "[+] Module completed successfully!"
 func (cli *CLI) EditModule(moduleName string) {
 	module, err := cli.manager.GetModule(moduleName)
 	if err != nil {
-		core.PrintError(fmt.Sprintf("Module not found: %v", err))
+		core.PrintError(fmt.Sprintf("Module not found: %v, try: 'search %v'", err, moduleName))
 		return
 	}
 
