@@ -86,7 +86,7 @@ func (em *EnvironmentManager) Clear() error {
 // Display shows all environment variables
 func (em *EnvironmentManager) Display() {
 	if len(em.vars) == 0 {
-		core.PrintWarning("No global environment variables set")
+		core.PrintWarning("No global environment variables set, use '<key> = <value>' to add some, or type '<key>=?' to view its value")
 		fmt.Println()
 		return
 	}
@@ -94,8 +94,14 @@ func (em *EnvironmentManager) Display() {
 	fmt.Println()
 	fmt.Println(core.NmapBox("GLOBAL ENVIRONMENT VARIABLES"))
 
+	i := 0
 	for key, value := range em.vars {
-		fmt.Printf("   %s = %s\n", core.Color("cyan", key), core.Color("green", value))
+		i++
+		prefix := "   ├─ "
+		if i == len(em.vars) {
+			prefix = "   └─ "
+		}
+		fmt.Printf("%s%s = %s\n", prefix, core.Color("cyan", key), core.Color("green", value))
 	}
 	fmt.Println()
 }
