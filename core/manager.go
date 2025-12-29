@@ -97,10 +97,10 @@ func (mm *ModuleManager) inferModuleType(moduleDir string) string {
 func (mm *ModuleManager) GetModule(name string) (*ModuleConfig, error) {
 	module, exists := mm.Modules[name]
 	if !exists {
-		return nil, fmt.Errorf("module '%s' not found", name)
+		return nil, fmt.Errorf("module '%s' not found, did you forget to load it?", name)
 	}
 	if !module.Loaded {
-		return nil, fmt.Errorf("module '%s' failed to load: %s", name, module.LoadError)
+		return nil, fmt.Errorf("module '%s' failed to load: %s, did you forget to load it?", name, module.LoadError)
 	}
 	return module, nil
 }
@@ -120,7 +120,7 @@ func (mm *ModuleManager) ExecuteModule(moduleName string, args map[string]string
 	case "go":
 		return executeGoModule(module, args)
 	default:
-		return nil, fmt.Errorf("unsupported module type: %s", module.Type)
+		return nil, fmt.Errorf("unsupported module type: %s, supported types are: python, bash, go", module.Type)
 	}
 }
 
@@ -134,7 +134,7 @@ func executePythonModule(module *ModuleConfig, args map[string]string) (*Executi
 	scriptPath := findMainScript(module.Path, ".py")
 	if scriptPath == "" {
 		result.Success = false
-		result.Error = "no Python script found in module"
+		result.Error = "no Python script found in module, expected .py file, e.g., main.py or run.py"
 		result.ExitCode = 1
 		return result, nil
 	}
@@ -235,15 +235,7 @@ func executeGoModule(module *ModuleConfig, args map[string]string) (*ExecutionRe
 func findMainScript(moduleDir string, extension string) string {
 	entries, _ := os.ReadDir(moduleDir)
 	for _, entry := range entries {
-		if !entry.IsDir() && strings.HasSuffix(entry.Name(), extension) {
-			if entry.Name() == "main"+extension || entry.Name() == "run"+extension {
-				return filepath.Join(moduleDir, entry.Name())
-			}
-		}
-	}
-	// Return first matching script if no main/run found
-	for _, entry := range entries {
-		if !entry.IsDir() && strings.HasSuffix(entry.Name(), extension) {
+		if !entry.IsDir() && entry.Name() == "main"+extension {
 			return filepath.Join(moduleDir, entry.Name())
 		}
 	}
