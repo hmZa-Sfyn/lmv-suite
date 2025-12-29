@@ -344,7 +344,7 @@ func (cli *CLI) EditModule(moduleName string) {
 		editor = "nano"
 	}
 
-	core.PrintInfo(fmt.Sprintf("Edit module '%s' (directory: %s)", moduleName, module.Path))
+	core.PrintInfo(fmt.Sprintf("Edit module '%s' (directory: %s), using editor: %s, press Ctrl+X to save", moduleName, module.Path))
 	fmt.Println()
 
 	files, err := ioutil.ReadDir(module.Path)
@@ -355,7 +355,23 @@ func (cli *CLI) EditModule(moduleName string) {
 
 	fmt.Println("Files in module:")
 	for i, file := range files {
-		fmt.Printf("  %d. %s\n", i+1, core.Color("cyan", file.Name()))
+		prefix := "├─ "
+		if i == len(files)-1 {
+			prefix = "└─ "
+		}
+		if file.IsDir() {
+			fmt.Printf("  %s%s/\n", prefix, core.Color("blue", file.Name()))
+			subfiles, _ := os.ReadDir(filepath.Join(module.Path, file.Name()))
+			for j, subfile := range subfiles {
+				subprefix := "│  ├─ "
+				if j == len(subfiles)-1 {
+					subprefix = "│  └─ "
+				}
+				fmt.Printf("  %s%s\n", subprefix, core.Color("green", subfile.Name()))
+			}
+		} else {
+			fmt.Printf("  %s%s\n", prefix, core.Color("green", file.Name()))
+		}
 	}
 	fmt.Println()
 
@@ -367,7 +383,7 @@ func (cli *CLI) EditModule(moduleName string) {
 func (cli *CLI) DeleteModule(moduleName string) {
 	module, err := cli.manager.GetModule(moduleName)
 	if err != nil {
-		core.PrintError(fmt.Sprintf("Module not found: %v", err))
+		core.PrintError(fmt.Sprintf("Module not found: %v, try: 'search %v'", err, moduleName))
 		return
 	}
 
