@@ -49,6 +49,45 @@ func (cli *CLI) PrintHelp() {
 			cmd.desc,
 		)
 	}
+
+	fmt.Println()
+	color.New(color.FgYellow, color.Bold).Println("Advanced Argument Features:")
+	fmt.Println()
+
+	advancedFeatures := []struct {
+		name string
+		desc string
+	}{
+		{"Quoted Strings", "Pass multi-word arguments: arg=\"from here to there\" time=\"15:45 4/6/2025\""},
+		{"Single Quotes", "Alternative quote style: arg='value with spaces'"},
+		{"Save Output", "Save module execution to log file: module_name arg=value save=1"},
+		{"Threaded Execution", "Run module with multiple threads: module_name arg=value threads=5"},
+		{"Log Location", "Output files saved to ./logs/ with timestamp: module_2006-01-02_15-04-05.log"},
+	}
+
+	for _, feat := range advancedFeatures {
+		fmt.Printf("  %s%-20s %s\n",
+			color.BlueString("◆ "),
+			color.CyanString(feat.name),
+			feat.desc,
+		)
+	}
+
+	fmt.Println()
+	color.New(color.FgMagenta, color.Bold).Println("Quick Examples:")
+	fmt.Println()
+
+	examples := []string{
+		"arp-spoofer interface=eth0 target=\"192.168.1.100\" save=1",
+		"dns-resolver domain=\"google.com\" save=1",
+		"port-scanner target=\"192.168.1.0/24\" threads=10 save=1",
+		"html-scraper url=\"https://example.com\" depth=\"2\" save=1",
+	}
+
+	for i, example := range examples {
+		fmt.Printf("  %d) %s\n", i+1, color.WhiteString(example))
+	}
+
 	fmt.Println()
 }
 
