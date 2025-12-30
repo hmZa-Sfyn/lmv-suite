@@ -1,7 +1,7 @@
 name: wifi-scanner
 description: "Passive Wi-Fi network scanner to detect nearby access points and clients"
 type: python
-author: l0n3ly_nat hmza
+author: "l0n3ly_nat & hmza"
 version: 1.0.0
 tags:
   - wifi

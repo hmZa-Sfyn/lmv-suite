@@ -1,7 +1,7 @@
 name: icmp-redirect
 description: "Send fake ICMP redirect packets to manipulate routing tables"
 type: python
-author: l0n3ly_nat hmza
+author: "l0n3ly_nat & hmza"
 version: 1.0.0
 tags:
   - network

@@ -1,7 +1,7 @@
 name: email_scraper
 description: "Extract email addresses from text, HTML, or web pages using regex and validation for data harvesting"
 type: python
-author: l0n3ly_nat hmza
+author: "l0n3ly_nat & hmza"
 version: 1.0.0
 tags:
   - scraping

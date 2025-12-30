@@ -1,7 +1,7 @@
 name: pdf_to_text
 description: "Convert PDF files to plain text or other formats like HTML, extracting readable content efficiently"
 type: python
-author: l0n3ly_nat hmza
+author: "l0n3ly_nat & hmza"
 version: 1.0.0
 tags:
   - pdf

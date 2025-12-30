@@ -1,7 +1,7 @@
 name: link_harvester
 description: "Scrape and harvest hyperlinks from web content, with filtering for internal/external or domain-specific links"
 type: python
-author: l0n3ly_nat hmza
+author: "l0n3ly_nat & hmza"
 version: 1.0.0
 tags:
   - web

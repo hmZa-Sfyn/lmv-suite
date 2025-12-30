@@ -1,7 +1,7 @@
 name: icmp-flooder
 description: "Simple ICMP ping flood tool for stress testing network responsiveness"
 type: python
-author: l0n3ly_nat hmza
+author: "l0n3ly_nat & hmza"
 version: 1.0.0
 tags:
   - dos

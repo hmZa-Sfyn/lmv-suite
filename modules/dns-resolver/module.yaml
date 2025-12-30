@@ -1,7 +1,7 @@
 name: dns-resolver
 description: "Custom DNS query tool to resolve domains and display all record types"
 type: python
-author: l0n3ly_nat hmza
+author: "l0n3ly_nat & hmza"
 version: 1.0.0
 tags:
   - dns

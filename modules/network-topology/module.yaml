@@ -1,7 +1,7 @@
 name: network-topology
 description: "Automatically discover and map local network devices and connections"
 type: python
-author: l0n3ly_nat hmza
+author: "l0n3ly_nat & hmza"
 version: 1.0.0
 tags:
   - network

@@ -1,7 +1,7 @@
 name: packet-crafter
 description: "Advanced custom packet builder with GUI-like CLI for any protocol"
 type: python
-author: l0n3ly_nat hmza
+author: "l0n3ly_nat & hmza"
 version: 1.0.0
 tags:
   - networking

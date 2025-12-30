@@ -1,7 +1,7 @@
 name: traceroute-mapper
 description: "Custom traceroute implementation with hop visualization using Scapy"
 type: python
-author: l0n3ly_nat hmza
+author: "l0n3ly_nat & hmza"
 version: 1.0.0
 tags:
   - network

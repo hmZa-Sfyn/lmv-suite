@@ -1,7 +1,7 @@
 name: form_extractor
 description: "Parse HTML from web pages to extract and analyze form tags, including inputs, actions, and methods"
 type: python
-author: l0n3ly_nat hmza
+author: "l0n3ly_nat & hmza"
 version: 1.0.0
 tags:
   - web

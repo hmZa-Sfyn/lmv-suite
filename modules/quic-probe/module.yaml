@@ -1,7 +1,7 @@
 name: quic-probe
 description: "Probe and analyze QUIC/HTTP3 traffic characteristics and server support"
 type: python
-author: l0n3ly_nat hmza
+author: "l0n3ly_nat & hmza"
 version: 1.0.0
 tags:
   - quic

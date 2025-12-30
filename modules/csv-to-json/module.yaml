@@ -1,7 +1,7 @@
 name: csv_to_json
 description: "Convert CSV files to JSON format, with customizable mapping and data cleaning features"
 type: python
-author: l0n3ly_nat hmza
+author: "l0n3ly_nat & hmza"
 version: 1.0.0
 tags:
   - conversion

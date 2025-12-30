@@ -1,7 +1,7 @@
 name: fetch_analyzer
 description: "Scan JavaScript code from web apps to detect and log usage of the Fetch API, including URLs and options"
 type: python
-author: l0n3ly_nat hmza
+author: "l0n3ly_nat & hmza"
 version: 1.0.0
 tags:
   - javascript

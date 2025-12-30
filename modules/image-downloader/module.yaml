@@ -1,7 +1,7 @@
 name: image_downloader
 description: "Bulk download images from URLs or web pages, with options for resizing and format conversion"
 type: python
-author: l0n3ly_nat hmza
+author: "l0n3ly_nat & hmza"
 version: 1.0.0
 tags:
   - web

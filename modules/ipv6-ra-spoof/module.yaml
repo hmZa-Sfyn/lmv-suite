@@ -1,7 +1,7 @@
 name: ipv6-ra-spoof
 description: "Spoof IPv6 Router Advertisements to perform MITM on IPv6 networks"
 type: python
-author: l0n3ly_nat hmza
+author: "l0n3ly_nat & hmza"
 version: 1.0.0
 tags:
   - ipv6

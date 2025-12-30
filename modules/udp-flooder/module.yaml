@@ -1,7 +1,7 @@
 name: udp-flooder
 description: "UDP-based flood tool targeting specific ports/services"
 type: python
-author: l0n3ly_nat hmza
+author: "l0n3ly_nat & hmza"
 version: 1.0.0
 tags:
   - dos

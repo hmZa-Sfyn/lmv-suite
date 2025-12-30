@@ -1,7 +1,7 @@
 name: data_aggregator
 description: "Aggregate harvested data from multiple sources (e.g., web, files) into structured formats like databases or reports"
 type: python
-author: l0n3ly_nat hmza
+author: "l0n3ly_nat & hmza"
 version: 1.0.0
 tags:
   - data
