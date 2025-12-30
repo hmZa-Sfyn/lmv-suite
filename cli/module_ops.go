@@ -399,3 +399,65 @@ func (cli *CLI) DeleteModule(moduleName string) {
 	core.PrintSuccess(fmt.Sprintf("Module '%s' deleted successfully", moduleName))
 	fmt.Println()
 }
+
+// parseArguments parses command-line arguments with support for quoted strings
+// Supports: arg="value with spaces", arg='value', arg=value
+func (cli *CLI) parseArguments(args []string) map[string]string {
+	result := make(map[string]string)
+	i := 0
+
+	for i < len(args) {
+		arg := args[i]
+
+		// Check if it's a key=value pair
+		if strings.Contains(arg, "=") {
+			parts := strings.SplitN(arg, "=", 2)
+			if len(parts) == 2 {
+				key := strings.TrimSpace(parts[0])
+				value := strings.TrimSpace(parts[1])
+
+				// Handle quoted values
+				if (strings.HasPrefix(value, "\"") && strings.HasSuffix(value, "\"")) ||
+					(strings.HasPrefix(value, "'") && strings.HasSuffix(value, "'")) {
+					// Remove quotes
+					value = value[1 : len(value)-1]
+				} else if strings.HasPrefix(value, "\"") || strings.HasPrefix(value, "'") {
+					// Handle quoted value that spans multiple args
+					quote := value[0]
+					value = value[1:]
+
+					// Collect remaining parts until closing quote
+					for i++; i < len(args); i++ {
+						value += " " + args[i]
+						if strings.HasSuffix(args[i], string(quote)) {
+							value = value[:len(value)-1] // Remove closing quote
+							break
+						}
+					}
+				}
+
+				result[key] = value
+			}
+		} else if i+2 < len(args) && args[i+1] == "=" {
+			// Handle "key = value" format
+			key := strings.TrimSpace(arg)
+			value := strings.TrimSpace(args[i+2])
+
+			// Handle quoted values
+			if (strings.HasPrefix(value, "\"") && strings.HasSuffix(value, "\"")) ||
+				(strings.HasPrefix(value, "'") && strings.HasSuffix(value, "'")) {
+				value = value[1 : len(value)-1]
+			}
+
+			result[key] = value
+			i += 2 // Skip the = and value
+		} else {
+			// Positional argument
+			result[fmt.Sprintf("arg%d", i)] = arg
+		}
+
+		i++
+	}
+
+	return result
+}
