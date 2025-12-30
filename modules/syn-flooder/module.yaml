@@ -1,0 +1,29 @@
+name: syn-flooder
+description: "Launch SYN flood attacks to test DoS resilience (educational use only)"
+type: python
+author: l0n3ly_nat
+version: 1.0.0
+tags:
+  - dos
+  - tcp
+  - stress-test
+options:
+  target:
+    type: string
+    description: Target IP address
+    required: true
+  port:
+    type: integer
+    description: Target port
+    required: true
+  count:
+    type: integer
+    description: Number of SYN packets
+    required: false
+    default: 1000
+  threads:
+    type: integer
+    description: Number of threads
+    required: false
+    default: 5
+required:
