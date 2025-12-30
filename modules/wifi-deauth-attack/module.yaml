@@ -1,0 +1,33 @@
+name: wifi-deauth-attack
+description: "Perform WiFi deauthentication attacks to test network security and disconnect devices"
+type: python
+author: l0n3ly_nat
+version: 1.0.0
+tags:
+  - wifi
+  - deauth
+  - security-test
+options:
+  interface:
+    type: string
+    description: Wireless interface name
+    required: true
+  bssid:
+    type: string
+    description: Target AP MAC address
+    required: true
+  target_mac:
+    type: string
+    description: Target client MAC (optional, all if not specified)
+    required: false
+  count:
+    type: integer
+    description: Number of deauth packets to send
+    required: false
+    default: 100
+  interval:
+    type: float
+    description: Interval between packets in seconds
+    required: false
+    default: 0.1
+required:

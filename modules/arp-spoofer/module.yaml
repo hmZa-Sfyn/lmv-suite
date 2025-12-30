@@ -1,7 +1,7 @@
 name: arp-spoofer
 description: "Perform ARP spoofing to intercept traffic on a local network (MITM setup)"
 type: python
-author: l0n3ly_nat
+author: "l0n3ly_nat & hmza"
 version: 1.0.0
 tags:
   - network

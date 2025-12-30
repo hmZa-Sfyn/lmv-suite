@@ -1,0 +1,29 @@
+name: network-traffic-monitor
+description: "Monitor and analyze network traffic in real-time, capturing and displaying packet statistics"
+type: python
+author: l0n3ly_nat
+version: 1.0.0
+tags:
+  - network
+  - monitoring
+  - traffic
+options:
+  interface:
+    type: string
+    description: Network interface to monitor
+    required: true
+  duration:
+    type: integer
+    description: Monitoring duration in seconds
+    required: false
+    default: 60
+  filter:
+    type: string
+    description: BPF filter (e.g., tcp port 80)
+    required: false
+  packet_count:
+    type: integer
+    description: Maximum packets to capture
+    required: false
+    default: 0
+required:

@@ -1,0 +1,30 @@
+name: network-device-detector
+description: "Detect and identify devices connected to the network with OS fingerprinting capabilities"
+type: python
+author: l0n3ly_nat
+version: 1.0.0
+tags:
+  - network
+  - discovery
+  - fingerprinting
+options:
+  network:
+    type: string
+    description: Network range (e.g., 192.168.1.0/24)
+    required: true
+  threads:
+    type: integer
+    description: Number of threads for scanning
+    required: false
+    default: 20
+  timeout:
+    type: integer
+    description: Timeout per host
+    required: false
+    default: 2
+  fingerprint:
+    type: boolean
+    description: Fingerprint OS of discovered devices
+    required: false
+    default: true
+required:

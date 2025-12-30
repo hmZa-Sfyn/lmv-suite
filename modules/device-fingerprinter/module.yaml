@@ -1,0 +1,25 @@
+name: device-fingerprinter
+description: "Fingerprint connected devices by analyzing network behavior, ports, and services"
+type: python
+author: l0n3ly_nat
+version: 1.0.0
+tags:
+  - fingerprinting
+  - reconnaissance
+  - network
+options:
+  target:
+    type: string
+    description: Target IP address to fingerprint
+    required: true
+  port_range:
+    type: string
+    description: Port range to scan (e.g., 1-65535)
+    required: false
+    default: "1-1000"
+  timeout:
+    type: integer
+    description: Connection timeout
+    required: false
+    default: 5
+required:

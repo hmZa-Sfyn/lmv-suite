@@ -1,7 +1,7 @@
 name: smtp-enum
 description: "Enumerate valid email users on SMTP servers using VRFY/EXPN/RCPT"
 type: python
-author: l0n3ly_nat
+author: "l0n3ly_nat & hmza"
 version: 1.0.0
 tags:
   - smtp

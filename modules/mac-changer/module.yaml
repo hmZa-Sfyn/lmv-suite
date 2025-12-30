@@ -1,7 +1,7 @@
 name: mac-changer
 description: "Change the MAC address of a network interface temporarily"
 type: python
-author: l0n3ly_nat
+author: "l0n3ly_nat & hmza"
 version: 1.0.0
 tags:
   - network

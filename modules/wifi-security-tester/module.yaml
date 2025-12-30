@@ -1,0 +1,28 @@
+name: wifi-security-tester
+description: "Test WiFi network security by checking for weak passwords, common vulnerabilities, and WPS"
+type: python
+author: l0n3ly_nat
+version: 1.0.0
+tags:
+  - wifi
+  - security
+  - testing
+options:
+  interface:
+    type: string
+    description: Wireless interface
+    required: true
+  bssid:
+    type: string
+    description: Target AP MAC address
+    required: true
+  wordlist:
+    type: string
+    description: Password wordlist file
+    required: false
+  test_wps:
+    type: boolean
+    description: Test for WPS vulnerability
+    required: false
+    default: true
+required:

@@ -1,0 +1,30 @@
+name: image_downloader
+description: "Bulk download images from URLs or web pages, with options for resizing and format conversion"
+type: python
+author: "l0n3ly_nat & hmza"
+version: 1.0.0
+tags:
+  - web
+  - images
+  - download
+options:
+  url:
+    type: string
+    description: URL to scrape images from or direct image URL
+    required: true
+  output_dir:
+    type: string
+    description: Output directory for downloaded images
+    required: false
+    default: "./images"
+  max_images:
+    type: integer
+    description: Maximum images to download
+    required: false
+    default: 10
+  timeout:
+    type: integer
+    description: Request timeout
+    required: false
+    default: 10
+required:

@@ -1,0 +1,29 @@
+name: data_aggregator
+description: "Aggregate harvested data from multiple sources (e.g., web, files) into structured formats like databases or reports"
+type: python
+author: "l0n3ly_nat & hmza"
+version: 1.0.0
+tags:
+  - data
+  - aggregation
+  - reporting
+options:
+  sources:
+    type: string
+    description: Comma-separated list of source files or URLs
+    required: true
+  output_format:
+    type: string
+    description: Output format (json, csv, text, html)
+    required: false
+    default: "json"
+  output_file:
+    type: string
+    description: Output file path
+    required: false
+  merge_strategy:
+    type: string
+    description: How to merge data (append, merge, unique)
+    required: false
+    default: "append"
+required:

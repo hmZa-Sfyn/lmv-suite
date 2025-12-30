@@ -1,7 +1,7 @@
 name: dhcp-starvation
 description: "Exhaust DHCP pool by requesting multiple IP addresses rapidly"
 type: python
-author: l0n3ly_nat
+author: "l0n3ly_nat & hmza"
 version: 1.0.0
 tags:
   - dos

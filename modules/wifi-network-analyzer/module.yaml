@@ -1,0 +1,24 @@
+name: wifi-network-analyzer
+description: "Analyze WiFi network information including encryption, channels, capabilities, and security details"
+type: python
+author: l0n3ly_nat
+version: 1.0.0
+tags:
+  - wifi
+  - analysis
+  - security
+options:
+  interface:
+    type: string
+    description: Wireless interface name
+    required: true
+  target_bssid:
+    type: string
+    description: Target AP MAC address (optional)
+    required: false
+  duration:
+    type: integer
+    description: Analysis duration in seconds
+    required: false
+    default: 15
+required:

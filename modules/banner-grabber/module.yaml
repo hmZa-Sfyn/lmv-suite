@@ -1,7 +1,7 @@
 name: banner-grabber
 description: "Connect to services and grab banners to identify software versions"
 type: python
-author: l0n3ly_nat
+author: "l0n3ly_nat & hmza"
 version: 1.0.0
 tags:
   - reconnaissance

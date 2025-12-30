@@ -1,7 +1,7 @@
 name: snmp-walker
 description: "Perform SNMP walks to extract system information from devices"
 type: python
-author: l0n3ly_nat
+author: "l0n3ly_nat & hmza"
 version: 1.0.0
 tags:
   - snmp

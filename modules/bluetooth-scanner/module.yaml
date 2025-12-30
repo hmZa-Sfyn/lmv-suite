@@ -1,0 +1,26 @@
+name: bluetooth-scanner
+description: "Scan for nearby Bluetooth devices, display device names, signal strength, and device types"
+type: python
+author: l0n3ly_nat
+version: 1.0.0
+tags:
+  - bluetooth
+  - scanning
+  - wireless
+options:
+  duration:
+    type: integer
+    description: Scan duration in seconds
+    required: false
+    default: 10
+  device_type:
+    type: string
+    description: Filter by device type (all, phone, laptop, headset, etc.)
+    required: false
+    default: "all"
+  show_rssi:
+    type: boolean
+    description: Show signal strength (RSSI)
+    required: false
+    default: true
+required:

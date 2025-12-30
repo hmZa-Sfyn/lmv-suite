@@ -2,6 +2,9 @@ package cli
 
 import (
 	"fmt"
+	"io/ioutil"
+	"os"
+	"path/filepath"
 	"sort"
 	"strings"
 
@@ -212,6 +215,45 @@ func (cli *CLI) ShowModuleInfo(moduleName string) {
 	} else {
 		fmt.Printf("   └─ %s %s\n", color.WhiteString("Type:"), cli.getTypeBadge(module.Type))
 		fmt.Println("   (No metadata available) ")
+	}
+
+	// Display README as "About This Module"
+	cli.displayReadme(moduleName, module)
+
+	fmt.Println()
+}
+
+// displayReadme reads and displays the README.md as "About This Module"
+func (cli *CLI) displayReadme(moduleName string, module *core.ModuleConfig) {
+	readmePath := filepath.Join(cli.manager.ModulesDir, moduleName, "README.md")
+
+	// Check if README exists
+	if _, err := os.Stat(readmePath); err != nil {
+		return
+	}
+
+	// Read README content
+	content, err := ioutil.ReadFile(readmePath)
+	if err != nil {
+		return
+	}
+
+	readmeText := string(content)
+	if readmeText == "" {
+		return
+	}
+
+	fmt.Println()
+	fmt.Println(core.NmapBox("ABOUT THIS MODULE"))
+
+	// Display README content with indentation
+	lines := strings.Split(strings.TrimSpace(readmeText), "\n")
+	for _, line := range lines {
+		if line == "" {
+			fmt.Println()
+		} else {
+			fmt.Printf("   %s\n", color.WhiteString(line))
+		}
 	}
 
 	fmt.Println()

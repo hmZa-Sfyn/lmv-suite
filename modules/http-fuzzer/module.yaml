@@ -1,7 +1,7 @@
 name: http-fuzzer
 description: "Basic HTTP request fuzzer to test web servers for vulnerabilities"
 type: python
-author: l0n3ly_nat
+author: "l0n3ly_nat & hmza"
 version: 1.0.0
 tags:
   - web

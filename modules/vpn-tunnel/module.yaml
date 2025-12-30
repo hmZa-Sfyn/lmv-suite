@@ -1,7 +1,7 @@
 name: vpn-tunnel
 description: "Simple IP-over-ICMP or DNS tunneling for bypassing restrictions"
 type: python
-author: l0n3ly_nat
+author: "l0n3ly_nat & hmza"
 version: 1.0.0
 tags:
   - vpn
