@@ -1,7 +1,7 @@
 name: dns-lookup
 description: "Resolve domain names to IP addresses"
 type: python
-author: LanManVan Team
+author: hmza
 version: 1.0.0
 tags:
   - networking

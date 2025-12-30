@@ -1,7 +1,7 @@
 name: checksum
 description: "Calculate file checksums (MD5, SHA1, SHA256)"
 type: python
-author: LanManVan Team
+author: hmza
 version: 1.0.0
 tags:
   - utilities

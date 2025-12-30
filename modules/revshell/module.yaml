@@ -1,7 +1,7 @@
 name: revshell
 description: "Generates reverse shell payloads"
 type: python
-author: LanManVan Team
+author: hmza
 version: 1.0.0
 tags:
   - payload

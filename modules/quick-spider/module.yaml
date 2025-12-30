@@ -1,7 +1,7 @@
 name: quick-spider
 description: "Simple single-threaded web crawler - lists pages/files with types, saves to TOML progressively"
 type: python
-author: LanManVan Team & Grok
+author: hmza & Grok
 version: 3.0.0
 tags:
   - web

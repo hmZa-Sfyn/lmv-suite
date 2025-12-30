@@ -1,7 +1,7 @@
 name: url-decode
 description: "Decodes URL encoded data"
 type: python
-author: LanManVan Team
+author: hmza
 version: 1.0.0
 tags:
   - encoding

@@ -1,7 +1,7 @@
 name: base64-encode
 description: "Encodes data to Base64 format"
 type: python
-author: LanManVan Team
+author: hmza
 version: 1.0.0
 tags:
   - encoding

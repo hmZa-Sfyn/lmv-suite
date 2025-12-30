@@ -5,7 +5,7 @@ Makes HTTP requests to a target
 
 ## Metadata
 - **Type:** bash
-- **Author:** LanManVan Team
+- **Author:** hmza
 - **Version:** 1.0.0
 
 ## Tags

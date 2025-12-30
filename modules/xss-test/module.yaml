@@ -1,7 +1,7 @@
 name: xss-test
 description: "Test URL for XSS vulnerabilities"
 type: python
-author: LanManVan Team
+author: hmza
 version: 1.0.0
 tags:
   - security

@@ -1,7 +1,7 @@
 name: ssl-checker
 description: "Check SSL certificate validity"
 type: python
-author: LanManVan Team
+author: hmza
 version: 1.0.0
 tags:
   - security

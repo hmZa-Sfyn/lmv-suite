@@ -1,7 +1,7 @@
 name: subdomain-enum
 description: "Enumerate subdomains for a domain"
 type: python
-author: LanManVan Team
+author: hmza
 version: 1.0.0
 tags:
   - recon

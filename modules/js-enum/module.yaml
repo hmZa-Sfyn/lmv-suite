@@ -2,7 +2,7 @@
 name: asset-hunter
 description: "Pro crawler with 160+ secret patterns + 10+ rotating User-Agents (GoogleBot, BingBot, etc.)"
 type: python
-author: LanManVan Team
+author: hmza
 version: 4.0.0
 tags:
   - web

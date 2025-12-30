@@ -1,7 +1,7 @@
 name: directory-scanner
 description: "Scan web server for common directories"
 type: python
-author: LanManVan Team
+author: hmza
 version: 1.0.0
 tags:
   - web

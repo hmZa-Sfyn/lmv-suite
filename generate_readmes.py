@@ -39,9 +39,17 @@ def generate_readme(module_path):
 
 ## Tags
 {', '.join(config.get('tags', [])) if config.get('tags') else 'No tags'}
-
-## Options
 """
+    
+    # Add social links if available
+    if config.get('github_url') or config.get('x_url'):
+        content += "\n## Links\n"
+        if config.get('github_url'):
+            content += f"- **GitHub:** {config['github_url']}\n"
+        if config.get('x_url'):
+            content += f"- **X/Twitter:** {config['x_url']}\n"
+    
+    content += "\n## Options\n"
     
     options = config.get('options', {})
     if options:

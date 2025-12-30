@@ -218,6 +218,16 @@ func (cli *CLI) ShowModuleInfo(moduleName string) {
 			fmt.Printf("   ├─ %s %s\n", color.WhiteString("Tags:"), color.CyanString(strings.Join(meta.Tags, ", ")))
 		}
 
+		// Display GitHub and X URLs
+		if meta.GitHubURL != "" || meta.XUrl != "" {
+			if meta.GitHubURL != "" {
+				fmt.Printf("   ├─ %s %s\n", color.WhiteString("GitHub:"), color.BlueString(meta.GitHubURL))
+			}
+			if meta.XUrl != "" {
+				fmt.Printf("   ├─ %s %s\n", color.WhiteString("X/Twitter:"), color.BlueString(meta.XUrl))
+			}
+		}
+
 		if len(meta.Options) > 0 {
 			fmt.Printf("   └─ %s\n", color.WhiteString("Options:"))
 
@@ -285,13 +295,47 @@ func (cli *CLI) displayReadme(moduleName string, module *core.ModuleConfig) {
 	fmt.Println()
 	fmt.Println(core.NmapBox("ABOUT THIS MODULE"))
 
-	// Display README content with indentation
+	// Create markdown renderer
+	renderer := NewMarkdownRenderer()
+
+	// Display README content with markdown rendering
 	lines := strings.Split(strings.TrimSpace(readmeText), "\n")
+	inCodeBlock := false
+	var codeBlockContent []string
+	var codeBlockLang string
+
 	for _, line := range lines {
-		if line == "" {
-			fmt.Println()
+		// Handle code blocks
+		if strings.HasPrefix(line, "```") {
+			if !inCodeBlock {
+				inCodeBlock = true
+				codeBlockLang = strings.TrimPrefix(line, "```")
+				if codeBlockLang == "" {
+					codeBlockLang = "code"
+				}
+				codeBlockContent = []string{}
+			} else {
+				// End code block
+				inCodeBlock = false
+				if len(codeBlockContent) > 0 {
+					fmt.Println()
+					fmt.Println(renderer.RenderCodeBlock(strings.Join(codeBlockContent, "\n"), codeBlockLang))
+					fmt.Println()
+				}
+				codeBlockContent = []string{}
+			}
+			continue
+		}
+
+		if inCodeBlock {
+			codeBlockContent = append(codeBlockContent, line)
 		} else {
-			fmt.Printf("   %s\n", color.WhiteString(line))
+			if line == "" {
+				fmt.Println()
+			} else {
+				renderedLine := renderer.renderLine(line)
+				fmt.Printf("   %s\n", renderedLine)
+			}
 		}
 	}
 

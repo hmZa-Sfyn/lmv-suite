@@ -1,7 +1,7 @@
 name: hostdiscovery
 description: "Discover live hosts on a network using ping with multithreading"
 type: python
-author: LanManVan Team
+author: hmza
 version: 1.0.0
 tags:
   - reconnaissance
