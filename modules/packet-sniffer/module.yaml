@@ -1,11 +1,11 @@
 name: packet-sniffer
-description: "Capture network packets (requires root)"
+description: Capture network packets (requires root)
 type: python
-author: LanManVan Team
+author: hmza
 version: 1.0.0
 tags:
-  - networking
-  - advanced
+- networking
+- advanced
 options:
   interface:
     type: string
@@ -15,3 +15,5 @@ options:
     type: integer
     description: Number of packets to capture
     required: false
+github_url: ''
+x_url: ''

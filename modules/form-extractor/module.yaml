@@ -1,12 +1,13 @@
 name: form_extractor
-description: "Parse HTML from web pages to extract and analyze form tags, including inputs, actions, and methods"
+description: Parse HTML from web pages to extract and analyze form tags, including
+  inputs, actions, and methods
 type: python
-author: "l0n3ly_nat & hmza"
+author: l0n3ly_nat & hmza
 version: 1.0.0
 tags:
-  - web
-  - html
-  - scraping
+- web
+- html
+- scraping
 options:
   url:
     type: string
@@ -16,10 +17,12 @@ options:
     type: string
     description: Output format (json, csv, text)
     required: false
-    default: "text"
+    default: text
   timeout:
     type: integer
     description: Request timeout in seconds
     required: false
     default: 10
-required:
+required: null
+github_url: ''
+x_url: ''

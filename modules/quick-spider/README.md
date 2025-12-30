@@ -5,11 +5,14 @@ Simple single-threaded web crawler - lists pages/files with types, saves to TOML
 
 ## Metadata
 - **Type:** python
-- **Author:** LanManVan Team & Grok
+- **Author:** hmza & Grok
 - **Version:** 3.0.0
 
 ## Tags
 web, crawler, simple, reconnaissance
+
+
+## Links
 
 ## Options
 

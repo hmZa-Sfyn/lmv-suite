@@ -1,12 +1,12 @@
 name: wifi-scanner
-description: "Passive Wi-Fi network scanner to detect nearby access points and clients"
+description: Passive Wi-Fi network scanner to detect nearby access points and clients
 type: python
-author: "l0n3ly_nat & hmza"
+author: l0n3ly_nat & hmza
 version: 1.0.0
 tags:
-  - wifi
-  - scanning
-  - wireless
+- wifi
+- scanning
+- wireless
 options:
   interface:
     type: string
@@ -22,4 +22,6 @@ options:
     description: Number of packets to capture
     required: false
     default: 0
-required:
+required: null
+github_url: ''
+x_url: ''

@@ -1,12 +1,13 @@
 name: link_harvester
-description: "Scrape and harvest hyperlinks from web content, with filtering for internal/external or domain-specific links"
+description: Scrape and harvest hyperlinks from web content, with filtering for internal/external
+  or domain-specific links
 type: python
-author: "l0n3ly_nat & hmza"
+author: l0n3ly_nat & hmza
 version: 1.0.0
 tags:
-  - web
-  - scraping
-  - harvesting
+- web
+- scraping
+- harvesting
 options:
   url:
     type: string
@@ -16,7 +17,7 @@ options:
     type: string
     description: Filter (all, internal, external)
     required: false
-    default: "all"
+    default: all
   timeout:
     type: integer
     description: Request timeout
@@ -27,4 +28,6 @@ options:
     description: Return unique links only
     required: false
     default: true
-required:
+required: null
+github_url: ''
+x_url: ''

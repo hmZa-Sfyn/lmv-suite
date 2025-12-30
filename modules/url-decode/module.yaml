@@ -1,13 +1,15 @@
 name: url-decode
-description: "Decodes URL encoded data"
+description: Decodes URL encoded data
 type: python
-author: LanManVan Team
+author: hmza
 version: 1.0.0
 tags:
-  - encoding
-  - utilities
+- encoding
+- utilities
 options:
   data:
     type: string
     description: URL encoded data to decode
     required: true
+github_url: ''
+x_url: ''

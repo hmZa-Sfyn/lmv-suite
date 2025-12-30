@@ -11,6 +11,9 @@ Scan JavaScript code from web apps to detect and log usage of the Fetch API, inc
 ## Tags
 javascript, api, scraping
 
+
+## Links
+
 ## Options
 
 ### url

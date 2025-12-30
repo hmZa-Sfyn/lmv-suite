@@ -1,12 +1,13 @@
 name: tag_matcher
-description: "Find and collect all HTML tags matching specific patterns (e.g., <a>, <p>, or custom selectors) from a webpage"
+description: Find and collect all HTML tags matching specific patterns (e.g., <a>,
+  <p>, or custom selectors) from a webpage
 type: python
-author: "l0n3ly_nat & hmza"
+author: l0n3ly_nat & hmza
 version: 1.0.0
 tags:
-  - html
-  - scraping
-  - parsing
+- html
+- scraping
+- parsing
 options:
   url:
     type: string
@@ -25,4 +26,6 @@ options:
     type: string
     description: Attribute to extract (optional)
     required: false
-required:
+required: null
+github_url: ''
+x_url: ''

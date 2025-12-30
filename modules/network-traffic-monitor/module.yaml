@@ -1,12 +1,13 @@
 name: network-traffic-monitor
-description: "Monitor and analyze network traffic in real-time, capturing and displaying packet statistics"
+description: Monitor and analyze network traffic in real-time, capturing and displaying
+  packet statistics
 type: python
 author: l0n3ly_nat
 version: 1.0.0
 tags:
-  - network
-  - monitoring
-  - traffic
+- network
+- monitoring
+- traffic
 options:
   interface:
     type: string
@@ -26,4 +27,6 @@ options:
     description: Maximum packets to capture
     required: false
     default: 0
-required:
+required: null
+github_url: ''
+x_url: ''

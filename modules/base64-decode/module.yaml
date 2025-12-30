@@ -1,13 +1,15 @@
 name: base64-decode
-description: "Decodes Base64 encoded data"
+description: Decodes Base64 encoded data
 type: python
-author: LanManVan Team
+author: hmza
 version: 1.0.0
 tags:
-  - encoding
-  - utilities
+- encoding
+- utilities
 options:
   data:
     type: string
     description: Base64 data to decode
     required: true
+github_url: ''
+x_url: ''

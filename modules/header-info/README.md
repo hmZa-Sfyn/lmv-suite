@@ -5,11 +5,14 @@ Extract HTTP headers from a website
 
 ## Metadata
 - **Type:** python
-- **Author:** LanManVan Team
+- **Author:** hmza
 - **Version:** 1.0.0
 
 ## Tags
 web, recon
+
+
+## Links
 
 ## Options
 

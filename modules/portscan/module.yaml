@@ -1,12 +1,12 @@
 name: portscan
-description: "Scans a host for open ports"
+description: Scans a host for open ports
 type: python
-author: LanManVan Team
+author: hmza
 version: 1.0.0
 tags:
-  - reconnaissance
-  - scanning
-  - network
+- reconnaissance
+- scanning
+- network
 options:
   host:
     type: string
@@ -15,7 +15,9 @@ options:
   ports:
     type: string
     description: Comma-separated list of ports to scan
-    default: "80,443,22,21,3306,5432"
+    default: 80,443,22,21,3306,5432
     required: false
 required:
-  - host
+- host
+github_url: ''
+x_url: ''

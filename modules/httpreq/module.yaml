@@ -1,12 +1,12 @@
 name: httpreq
-description: "Makes HTTP requests to a target"
+description: Makes HTTP requests to a target
 type: bash
-author: LanManVan Team
+author: hmza
 version: 1.0.0
 tags:
-  - networking
-  - web
-  - http
+- networking
+- web
+- http
 options:
   host:
     type: string
@@ -15,12 +15,14 @@ options:
   method:
     type: string
     description: HTTP method (GET, POST, etc)
-    default: "GET"
+    default: GET
     required: false
   path:
     type: string
     description: URL path
-    default: "/"
+    default: /
     required: false
 required:
-  - host
+- host
+github_url: ''
+x_url: ''

@@ -11,6 +11,9 @@ Find and collect all HTML tags matching specific patterns (e.g., <a>, <p>, or cu
 ## Tags
 html, scraping, parsing
 
+
+## Links
+
 ## Options
 
 ### url

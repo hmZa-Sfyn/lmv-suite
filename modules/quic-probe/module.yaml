@@ -1,12 +1,12 @@
 name: quic-probe
-description: "Probe and analyze QUIC/HTTP3 traffic characteristics and server support"
+description: Probe and analyze QUIC/HTTP3 traffic characteristics and server support
 type: python
-author: "l0n3ly_nat & hmza"
+author: l0n3ly_nat & hmza
 version: 1.0.0
 tags:
-  - quic
-  - http3
-  - network
+- quic
+- http3
+- network
 options:
   host:
     type: string
@@ -26,5 +26,7 @@ options:
     type: string
     description: Probe type (handshake, version, initial)
     required: false
-    default: "handshake"
-required:
+    default: handshake
+required: null
+github_url: ''
+x_url: ''

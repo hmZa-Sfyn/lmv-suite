@@ -1,12 +1,12 @@
 name: dns-resolver
-description: "Custom DNS query tool to resolve domains and display all record types"
+description: Custom DNS query tool to resolve domains and display all record types
 type: python
-author: "l0n3ly_nat & hmza"
+author: l0n3ly_nat & hmza
 version: 1.0.0
 tags:
-  - dns
-  - reconnaissance
-  - network
+- dns
+- reconnaissance
+- network
 options:
   domain:
     type: string
@@ -16,9 +16,11 @@ options:
     type: string
     description: DNS record type (A, AAAA, MX, NS, TXT, CNAME)
     required: false
-    default: "A"
+    default: A
   nameserver:
     type: string
     description: Custom nameserver to use
     required: false
-required:
+required: null
+github_url: ''
+x_url: ''

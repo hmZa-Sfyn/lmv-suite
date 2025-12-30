@@ -5,11 +5,14 @@ Generates reverse shell payloads
 
 ## Metadata
 - **Type:** python
-- **Author:** LanManVan Team
+- **Author:** hmza
 - **Version:** 1.0.0
 
 ## Tags
 payload, shell, exploitation
+
+
+## Links
 
 ## Options
 

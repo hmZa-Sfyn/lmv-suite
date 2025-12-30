@@ -5,11 +5,14 @@ Enumerate subdomains for a domain
 
 ## Metadata
 - **Type:** python
-- **Author:** LanManVan Team
+- **Author:** hmza
 - **Version:** 1.0.0
 
 ## Tags
 recon, networking
+
+
+## Links
 
 ## Options
 

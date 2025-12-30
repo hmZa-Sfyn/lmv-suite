@@ -1,13 +1,15 @@
 name: sql-injection-test
-description: "Test URL for basic SQL injection vulnerabilities"
+description: Test URL for basic SQL injection vulnerabilities
 type: python
-author: LanManVan Team
+author: hmza
 version: 1.0.0
 tags:
-  - security
-  - web
+- security
+- web
 options:
   url:
     type: string
     description: Target URL with parameter
     required: true
+github_url: ''
+x_url: ''

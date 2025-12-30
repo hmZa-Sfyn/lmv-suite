@@ -1,12 +1,13 @@
 name: email_scraper
-description: "Extract email addresses from text, HTML, or web pages using regex and validation for data harvesting"
+description: Extract email addresses from text, HTML, or web pages using regex and
+  validation for data harvesting
 type: python
-author: "l0n3ly_nat & hmza"
+author: l0n3ly_nat & hmza
 version: 1.0.0
 tags:
-  - scraping
-  - harvesting
-  - email
+- scraping
+- harvesting
+- email
 options:
   url:
     type: string
@@ -16,7 +17,7 @@ options:
     type: string
     description: Source type (url, file, text)
     required: false
-    default: "url"
+    default: url
   validate:
     type: boolean
     description: Validate email format
@@ -27,4 +28,6 @@ options:
     description: Request timeout
     required: false
     default: 10
-required:
+required: null
+github_url: ''
+x_url: ''

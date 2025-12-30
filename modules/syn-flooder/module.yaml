@@ -1,12 +1,12 @@
 name: syn-flooder
-description: "Launch SYN flood attacks to test DoS resilience (educational use only)"
+description: Launch SYN flood attacks to test DoS resilience (educational use only)
 type: python
-author: "l0n3ly_nat & hmza"
+author: l0n3ly_nat & hmza
 version: 1.0.0
 tags:
-  - dos
-  - tcp
-  - stress-test
+- dos
+- tcp
+- stress-test
 options:
   target:
     type: string
@@ -26,4 +26,6 @@ options:
     description: Number of threads
     required: false
     default: 5
-required:
+required: null
+github_url: ''
+x_url: ''

@@ -1,11 +1,11 @@
 name: password-generator
-description: "Generate strong random passwords"
+description: Generate strong random passwords
 type: python
-author: LanManVan Team
+author: hmza
 version: 1.0.0
 tags:
-  - utilities
-  - security
+- utilities
+- security
 options:
   length:
     type: integer
@@ -15,3 +15,5 @@ options:
     type: integer
     description: Number of passwords to generate
     required: false
+github_url: ''
+x_url: ''

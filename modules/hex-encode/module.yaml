@@ -1,12 +1,14 @@
 name: hex-encode
-description: "Encodes data to hexadecimal"
+description: Encodes data to hexadecimal
 type: python
-author: LanManVan Team
+author: hmza
 version: 1.0.0
 tags:
-  - encoding
+- encoding
 options:
   data:
     type: string
     description: Data to hex encode
     required: true
+github_url: ''
+x_url: ''

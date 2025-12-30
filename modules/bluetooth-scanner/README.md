@@ -11,6 +11,9 @@ Scan for nearby Bluetooth devices, display device names, signal strength, and de
 ## Tags
 bluetooth, scanning, wireless
 
+
+## Links
+
 ## Options
 
 ### duration

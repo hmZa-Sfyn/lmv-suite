@@ -11,6 +11,9 @@ Crawl web apps to discover and list potential API endpoints from JavaScript or n
 ## Tags
 api, discovery, reconnaissance
 
+
+## Links
+
 ## Options
 
 ### url

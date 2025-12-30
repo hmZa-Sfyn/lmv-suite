@@ -1,12 +1,12 @@
 name: rogue-ap-detector
-description: "Detect rogue WiFi access points and unauthorized network devices"
+description: Detect rogue WiFi access points and unauthorized network devices
 type: python
 author: l0n3ly_nat
 version: 1.0.0
 tags:
-  - wifi
-  - security
-  - detection
+- wifi
+- security
+- detection
 options:
   interface:
     type: string
@@ -21,4 +21,6 @@ options:
     description: Scan duration in seconds
     required: false
     default: 30
-required:
+required: null
+github_url: ''
+x_url: ''

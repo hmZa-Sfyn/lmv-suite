@@ -1,12 +1,12 @@
 name: curl-get
-description: "Performs GET requests to specified URLs"
+description: Performs GET requests to specified URLs
 type: python
-author: LanManVan Team
+author: hmza
 version: 1.0.0
 tags:
-  - networking
-  - http
-  - utilities
+- networking
+- http
+- utilities
 options:
   url:
     type: string
@@ -20,3 +20,5 @@ options:
     type: integer
     description: Request timeout in seconds
     required: false
+github_url: ''
+x_url: ''

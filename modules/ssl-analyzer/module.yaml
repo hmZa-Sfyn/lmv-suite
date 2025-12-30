@@ -1,13 +1,13 @@
 name: ssl-analyzer
-description: "Inspect TLS/SSL handshakes and certificates from target hosts"
+description: Inspect TLS/SSL handshakes and certificates from target hosts
 type: python
-author: "l0n3ly_nat & hmza"
+author: l0n3ly_nat & hmza
 version: 1.0.0
 tags:
-  - ssl
-  - tls
-  - certificate
-  - reconnaissance
+- ssl
+- tls
+- certificate
+- reconnaissance
 options:
   host:
     type: string
@@ -23,4 +23,6 @@ options:
     description: Connection timeout in seconds
     required: false
     default: 10
-required:
+required: null
+github_url: ''
+x_url: ''

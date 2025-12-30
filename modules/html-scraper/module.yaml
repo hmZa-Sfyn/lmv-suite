@@ -1,11 +1,11 @@
 name: html-scraper
-description: "Extract data from HTML pages"
+description: Extract data from HTML pages
 type: python
-author: LanManVan Team
+author: hmza
 version: 1.0.0
 tags:
-  - web
-  - utilities
+- web
+- utilities
 options:
   url:
     type: string
@@ -15,3 +15,5 @@ options:
     type: string
     description: CSS selector (optional)
     required: false
+github_url: ''
+x_url: ''

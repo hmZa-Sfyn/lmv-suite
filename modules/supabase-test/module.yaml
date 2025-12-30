@@ -1,12 +1,12 @@
 name: supabase-test
-description: "Test Supabase connection with URL and anonymous key"
+description: Test Supabase connection with URL and anonymous key
 type: python
-author: LanManVan Team
+author: hmza
 version: 1.0.0
 tags:
-  - database
-  - api
-  - testing
+- database
+- api
+- testing
 options:
   url:
     type: string
@@ -20,3 +20,5 @@ options:
     type: string
     description: Table name to test (optional)
     required: false
+github_url: ''
+x_url: ''

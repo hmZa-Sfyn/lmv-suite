@@ -1,12 +1,12 @@
 name: icmp-flooder
-description: "Simple ICMP ping flood tool for stress testing network responsiveness"
+description: Simple ICMP ping flood tool for stress testing network responsiveness
 type: python
-author: "l0n3ly_nat & hmza"
+author: l0n3ly_nat & hmza
 version: 1.0.0
 tags:
-  - dos
-  - icmp
-  - stress-test
+- dos
+- icmp
+- stress-test
 options:
   target:
     type: string
@@ -27,4 +27,6 @@ options:
     description: Interval between packets in seconds
     required: false
     default: 0.1
-required:
+required: null
+github_url: ''
+x_url: ''

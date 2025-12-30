@@ -1,12 +1,12 @@
 name: http-fuzzer
-description: "Basic HTTP request fuzzer to test web servers for vulnerabilities"
+description: Basic HTTP request fuzzer to test web servers for vulnerabilities
 type: python
-author: "l0n3ly_nat & hmza"
+author: l0n3ly_nat & hmza
 version: 1.0.0
 tags:
-  - web
-  - fuzzing
-  - vulnerability
+- web
+- fuzzing
+- vulnerability
 options:
   url:
     type: string
@@ -16,7 +16,7 @@ options:
     type: string
     description: Path to wordlist file
     required: false
-    default: "/usr/share/wordlists/common.txt"
+    default: /usr/share/wordlists/common.txt
   threads:
     type: integer
     description: Number of threads
@@ -27,4 +27,6 @@ options:
     description: Request timeout in seconds
     required: false
     default: 5
-required:
+required: null
+github_url: ''
+x_url: ''

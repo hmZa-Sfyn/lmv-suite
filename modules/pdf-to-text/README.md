@@ -11,6 +11,9 @@ Convert PDF files to plain text or other formats like HTML, extracting readable 
 ## Tags
 pdf, conversion, text
 
+
+## Links
+
 ## Options
 
 ### input_file

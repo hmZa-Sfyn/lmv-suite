@@ -1,12 +1,12 @@
 name: icmp-redirect
-description: "Send fake ICMP redirect packets to manipulate routing tables"
+description: Send fake ICMP redirect packets to manipulate routing tables
 type: python
-author: "l0n3ly_nat & hmza"
+author: l0n3ly_nat & hmza
 version: 1.0.0
 tags:
-  - network
-  - mitm
-  - routing
+- network
+- mitm
+- routing
 options:
   gateway:
     type: string
@@ -24,5 +24,7 @@ options:
     type: string
     description: Network interface
     required: false
-    default: "eth0"
-required:
+    default: eth0
+required: null
+github_url: ''
+x_url: ''

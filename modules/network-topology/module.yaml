@@ -1,12 +1,12 @@
 name: network-topology
-description: "Automatically discover and map local network devices and connections"
+description: Automatically discover and map local network devices and connections
 type: python
-author: "l0n3ly_nat & hmza"
+author: l0n3ly_nat & hmza
 version: 1.0.0
 tags:
-  - network
-  - discovery
-  - mapping
+- network
+- discovery
+- mapping
 options:
   network:
     type: string
@@ -22,4 +22,6 @@ options:
     description: Ping timeout
     required: false
     default: 2
-required:
+required: null
+github_url: ''
+x_url: ''

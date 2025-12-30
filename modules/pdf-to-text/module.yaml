@@ -1,12 +1,13 @@
 name: pdf_to_text
-description: "Convert PDF files to plain text or other formats like HTML, extracting readable content efficiently"
+description: Convert PDF files to plain text or other formats like HTML, extracting
+  readable content efficiently
 type: python
-author: "l0n3ly_nat & hmza"
+author: l0n3ly_nat & hmza
 version: 1.0.0
 tags:
-  - pdf
-  - conversion
-  - text
+- pdf
+- conversion
+- text
 options:
   input_file:
     type: string
@@ -16,7 +17,7 @@ options:
     type: string
     description: Output format (text, html, markdown)
     required: false
-    default: "text"
+    default: text
   output_file:
     type: string
     description: Output file path (optional)
@@ -25,4 +26,6 @@ options:
     type: string
     description: Page range to extract (e.g., 1-5)
     required: false
-required:
+required: null
+github_url: ''
+x_url: ''

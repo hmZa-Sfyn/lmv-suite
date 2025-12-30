@@ -1,12 +1,12 @@
 name: port-knocker
-description: "Perform port knocking sequences to open firewall ports stealthily"
+description: Perform port knocking sequences to open firewall ports stealthily
 type: python
-author: "l0n3ly_nat & hmza"
+author: l0n3ly_nat & hmza
 version: 1.0.0
 tags:
-  - network
-  - firewall
-  - stealth
+- network
+- firewall
+- stealth
 options:
   host:
     type: string
@@ -25,5 +25,7 @@ options:
     type: string
     description: Protocol to use (tcp, udp)
     required: false
-    default: "tcp"
-required:
+    default: tcp
+required: null
+github_url: ''
+x_url: ''

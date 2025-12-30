@@ -5,11 +5,14 @@ Pro crawler with 160+ secret patterns + 10+ rotating User-Agents (GoogleBot, Bin
 
 ## Metadata
 - **Type:** python
-- **Author:** LanManVan Team
+- **Author:** hmza
 - **Version:** 4.0.0
 
 ## Tags
 web, crawler, secrets, api-keys, user-agents
+
+
+## Links
 
 ## Options
 

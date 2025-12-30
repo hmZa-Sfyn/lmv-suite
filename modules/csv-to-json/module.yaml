@@ -1,12 +1,13 @@
 name: csv_to_json
-description: "Convert CSV files to JSON format, with customizable mapping and data cleaning features"
+description: Convert CSV files to JSON format, with customizable mapping and data
+  cleaning features
 type: python
-author: "l0n3ly_nat & hmza"
+author: l0n3ly_nat & hmza
 version: 1.0.0
 tags:
-  - conversion
-  - data
-  - csv
+- conversion
+- data
+- csv
 options:
   input_file:
     type: string
@@ -20,10 +21,12 @@ options:
     type: string
     description: CSV delimiter character
     required: false
-    default: ","
+    default: ','
   pretty_print:
     type: boolean
     description: Pretty print JSON output
     required: false
     default: true
-required:
+required: null
+github_url: ''
+x_url: ''

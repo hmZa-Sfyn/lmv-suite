@@ -1,12 +1,12 @@
 name: ftp-anonymous
-description: "Automated checker for anonymous FTP login and directory listing"
+description: Automated checker for anonymous FTP login and directory listing
 type: python
-author: "l0n3ly_nat & hmza"
+author: l0n3ly_nat & hmza
 version: 1.0.0
 tags:
-  - ftp
-  - enumeration
-  - anonymous
+- ftp
+- enumeration
+- anonymous
 options:
   host:
     type: string
@@ -27,4 +27,6 @@ options:
     description: Directory recursion depth
     required: false
     default: 2
-required:
+required: null
+github_url: ''
+x_url: ''

@@ -5,11 +5,14 @@ Resolve domain names to IP addresses
 
 ## Metadata
 - **Type:** python
-- **Author:** LanManVan Team
+- **Author:** hmza
 - **Version:** 1.0.0
 
 ## Tags
 networking, dns
+
+
+## Links
 
 ## Options
 

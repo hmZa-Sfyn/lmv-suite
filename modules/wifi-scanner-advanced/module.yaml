@@ -1,12 +1,13 @@
 name: wifi-scanner-advanced
-description: "Advanced WiFi scanner with detailed network analysis, signal strength mapping, and channel information"
+description: Advanced WiFi scanner with detailed network analysis, signal strength
+  mapping, and channel information
 type: python
 author: l0n3ly_nat
 version: 1.0.0
 tags:
-  - wifi
-  - scanning
-  - wireless
+- wifi
+- scanning
+- wireless
 options:
   interface:
     type: string
@@ -26,4 +27,6 @@ options:
     type: integer
     description: Scan specific channel (optional)
     required: false
-required:
+required: null
+github_url: ''
+x_url: ''

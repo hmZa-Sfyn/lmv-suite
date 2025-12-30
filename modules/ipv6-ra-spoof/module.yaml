@@ -1,12 +1,12 @@
 name: ipv6-ra-spoof
-description: "Spoof IPv6 Router Advertisements to perform MITM on IPv6 networks"
+description: Spoof IPv6 Router Advertisements to perform MITM on IPv6 networks
 type: python
-author: "l0n3ly_nat & hmza"
+author: l0n3ly_nat & hmza
 version: 1.0.0
 tags:
-  - ipv6
-  - ra
-  - mitm
+- ipv6
+- ra
+- mitm
 options:
   interface:
     type: string
@@ -20,10 +20,12 @@ options:
     type: string
     description: IPv6 prefix to advertise
     required: false
-    default: "fd00::/64"
+    default: fd00::/64
   lifetime:
     type: integer
     description: Router lifetime in seconds
     required: false
     default: 3600
-required:
+required: null
+github_url: ''
+x_url: ''

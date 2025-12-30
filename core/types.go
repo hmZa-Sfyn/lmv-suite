@@ -12,6 +12,8 @@ type ModuleMetadata struct {
 	Options     map[string]OptionMeta `yaml:"options"`
 	Required    []string              `yaml:"required"`
 	Tags        []string              `yaml:"tags"`
+	GitHubURL   string                `yaml:"github_url"`
+	XUrl        string                `yaml:"x_url"`
 }
 
 // OptionMeta describes a module option

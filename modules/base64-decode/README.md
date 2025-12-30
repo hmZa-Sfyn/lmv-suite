@@ -5,11 +5,14 @@ Decodes Base64 encoded data
 
 ## Metadata
 - **Type:** python
-- **Author:** LanManVan Team
+- **Author:** hmza
 - **Version:** 1.0.0
 
 ## Tags
 encoding, utilities
+
+
+## Links
 
 ## Options
 

@@ -1,12 +1,12 @@
 name: packet-crafter
-description: "Advanced custom packet builder with GUI-like CLI for any protocol"
+description: Advanced custom packet builder with GUI-like CLI for any protocol
 type: python
-author: "l0n3ly_nat & hmza"
+author: l0n3ly_nat & hmza
 version: 1.0.0
 tags:
-  - networking
-  - protocol
-  - packet-building
+- networking
+- protocol
+- packet-building
 options:
   protocol:
     type: string
@@ -32,4 +32,6 @@ options:
     type: string
     description: Payload data
     required: false
-required:
+required: null
+github_url: ''
+x_url: ''

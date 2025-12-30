@@ -1,11 +1,11 @@
 name: file-creator
-description: "Create files with specified content"
+description: Create files with specified content
 type: python
-author: LanManVan Team
+author: hmza
 version: 1.0.0
 tags:
-  - utilities
-  - files
+- utilities
+- files
 options:
   path:
     type: string
@@ -15,3 +15,5 @@ options:
     type: string
     description: File content
     required: true
+github_url: ''
+x_url: ''

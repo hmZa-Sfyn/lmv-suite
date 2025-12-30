@@ -1,13 +1,14 @@
 name: quick-spider
-description: "Simple single-threaded web crawler - lists pages/files with types, saves to TOML progressively"
+description: Simple single-threaded web crawler - lists pages/files with types, saves
+  to TOML progressively
 type: python
-author: LanManVan Team & Grok
+author: hmza & Grok
 version: 3.0.0
 tags:
-  - web
-  - crawler
-  - simple
-  - reconnaissance
+- web
+- crawler
+- simple
+- reconnaissance
 options:
   url:
     type: string
@@ -24,4 +25,6 @@ options:
     required: false
     default: spider.toml
 required:
-  - url
+- url
+github_url: ''
+x_url: ''

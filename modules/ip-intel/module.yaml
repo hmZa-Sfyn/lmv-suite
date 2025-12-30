@@ -1,14 +1,15 @@
 name: ultimate-ip-intel
-description: "Gather exhaustive intelligence on an IP: geolocation, network, security, threats, reverse DNS, OS fingerprinting, port scanning, and probe responses (ICMP/TCP/UDP)"
+description: 'Gather exhaustive intelligence on an IP: geolocation, network, security,
+  threats, reverse DNS, OS fingerprinting, port scanning, and probe responses (ICMP/TCP/UDP)'
 type: python
 author: Enhanced by Grok
 version: 1.2.0
 tags:
-  - networking
-  - geolocation
-  - security
-  - threat-intelligence
-  - osint
+- networking
+- geolocation
+- security
+- threat-intelligence
+- osint
 options:
   ip:
     type: string
@@ -23,3 +24,5 @@ options:
     type: dict
     description: Optional API keys for AbuseIPDB, Shodan, etc.
     required: false
+github_url: ''
+x_url: ''

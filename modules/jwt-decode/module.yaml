@@ -1,13 +1,15 @@
 name: jwt-decode
-description: "Decodes JWT tokens (no verification)"
+description: Decodes JWT tokens (no verification)
 type: python
-author: LanManVan Team
+author: hmza
 version: 1.0.0
 tags:
-  - security
-  - jwt
+- security
+- jwt
 options:
   token:
     type: string
     description: JWT token to decode
     required: true
+github_url: ''
+x_url: ''

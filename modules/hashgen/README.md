@@ -5,11 +5,14 @@ Generates MD5, SHA1, SHA256, and SHA512 hashes
 
 ## Metadata
 - **Type:** python
-- **Author:** LanManVan Team
+- **Author:** hmza
 - **Version:** 1.0.0
 
 ## Tags
 crypto, hashing, utilities
+
+
+## Links
 
 ## Options
 

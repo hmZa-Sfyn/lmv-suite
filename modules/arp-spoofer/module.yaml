@@ -1,12 +1,12 @@
 name: arp-spoofer
-description: "Perform ARP spoofing to intercept traffic on a local network (MITM setup)"
+description: Perform ARP spoofing to intercept traffic on a local network (MITM setup)
 type: python
-author: "l0n3ly_nat & hmza"
+author: l0n3ly_nat & hmza
 version: 1.0.0
 tags:
-  - network
-  - mitm
-  - arp
+- network
+- mitm
+- arp
 options:
   target_ip:
     type: string
@@ -20,10 +20,12 @@ options:
     type: string
     description: Network interface to use
     required: false
-    default: "eth0"
+    default: eth0
   duration:
     type: integer
     description: Duration in seconds (0 for infinite)
     required: false
     default: 60
-required:
+required: null
+github_url: ''
+x_url: ''

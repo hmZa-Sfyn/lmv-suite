@@ -1,12 +1,13 @@
 name: wifi-security-tester
-description: "Test WiFi network security by checking for weak passwords, common vulnerabilities, and WPS"
+description: Test WiFi network security by checking for weak passwords, common vulnerabilities,
+  and WPS
 type: python
 author: l0n3ly_nat
 version: 1.0.0
 tags:
-  - wifi
-  - security
-  - testing
+- wifi
+- security
+- testing
 options:
   interface:
     type: string
@@ -25,4 +26,6 @@ options:
     description: Test for WPS vulnerability
     required: false
     default: true
-required:
+required: null
+github_url: ''
+x_url: ''

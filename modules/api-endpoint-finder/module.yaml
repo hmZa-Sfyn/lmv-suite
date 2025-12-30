@@ -1,12 +1,13 @@
 name: api_endpoint_finder
-description: "Crawl web apps to discover and list potential API endpoints from JavaScript or network requests"
+description: Crawl web apps to discover and list potential API endpoints from JavaScript
+  or network requests
 type: python
-author: "l0n3ly_nat & hmza"
+author: l0n3ly_nat & hmza
 version: 1.0.0
 tags:
-  - api
-  - discovery
-  - reconnaissance
+- api
+- discovery
+- reconnaissance
 options:
   url:
     type: string
@@ -27,4 +28,6 @@ options:
     description: Look for API endpoint patterns
     required: false
     default: true
-required:
+required: null
+github_url: ''
+x_url: ''

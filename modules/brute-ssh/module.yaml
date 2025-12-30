@@ -1,12 +1,12 @@
 name: brute-ssh
-description: "Basic SSH brute-force module with wordlist support (for pentesting)"
+description: Basic SSH brute-force module with wordlist support (for pentesting)
 type: python
-author: "l0n3ly_nat & hmza"
+author: l0n3ly_nat & hmza
 version: 1.0.0
 tags:
-  - ssh
-  - brute-force
-  - security
+- ssh
+- brute-force
+- security
 options:
   host:
     type: string
@@ -30,4 +30,6 @@ options:
     description: Connection timeout
     required: false
     default: 5
-required:
+required: null
+github_url: ''
+x_url: ''

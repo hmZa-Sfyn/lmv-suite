@@ -1,12 +1,13 @@
 name: wifi-deauth-attack
-description: "Perform WiFi deauthentication attacks to test network security and disconnect devices"
+description: Perform WiFi deauthentication attacks to test network security and disconnect
+  devices
 type: python
 author: l0n3ly_nat
 version: 1.0.0
 tags:
-  - wifi
-  - deauth
-  - security-test
+- wifi
+- deauth
+- security-test
 options:
   interface:
     type: string
@@ -30,4 +31,6 @@ options:
     description: Interval between packets in seconds
     required: false
     default: 0.1
-required:
+required: null
+github_url: ''
+x_url: ''

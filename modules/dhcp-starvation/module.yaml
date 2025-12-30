@@ -1,12 +1,12 @@
 name: dhcp-starvation
-description: "Exhaust DHCP pool by requesting multiple IP addresses rapidly"
+description: Exhaust DHCP pool by requesting multiple IP addresses rapidly
 type: python
-author: "l0n3ly_nat & hmza"
+author: l0n3ly_nat & hmza
 version: 1.0.0
 tags:
-  - dos
-  - dhcp
-  - network
+- dos
+- dhcp
+- network
 options:
   interface:
     type: string
@@ -22,4 +22,6 @@ options:
     description: Timeout for each request
     required: false
     default: 5
-required:
+required: null
+github_url: ''
+x_url: ''

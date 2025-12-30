@@ -5,11 +5,14 @@ Calculate file checksums (MD5, SHA1, SHA256)
 
 ## Metadata
 - **Type:** python
-- **Author:** LanManVan Team
+- **Author:** hmza
 - **Version:** 1.0.0
 
 ## Tags
 utilities, hashing
+
+
+## Links
 
 ## Options
 

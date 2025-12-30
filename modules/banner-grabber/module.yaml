@@ -1,12 +1,12 @@
 name: banner-grabber
-description: "Connect to services and grab banners to identify software versions"
+description: Connect to services and grab banners to identify software versions
 type: python
-author: "l0n3ly_nat & hmza"
+author: l0n3ly_nat & hmza
 version: 1.0.0
 tags:
-  - reconnaissance
-  - banner
-  - enumeration
+- reconnaissance
+- banner
+- enumeration
 options:
   host:
     type: string
@@ -25,5 +25,7 @@ options:
     type: string
     description: Protocol (raw, http, ftp, ssh)
     required: false
-    default: "raw"
-required:
+    default: raw
+required: null
+github_url: ''
+x_url: ''

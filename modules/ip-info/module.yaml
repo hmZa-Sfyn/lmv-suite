@@ -1,15 +1,18 @@
 name: advanced-ip-geolocation
-description: "Get maximum possible geolocation, network, security, and threat info for an IP address using free APIs"
+description: Get maximum possible geolocation, network, security, and threat info
+  for an IP address using free APIs
 type: python
 author: Enhanced by Grok
 version: 1.1.0
 tags:
-  - networking
-  - geolocation
-  - security
-  - threat-intelligence
+- networking
+- geolocation
+- security
+- threat-intelligence
 options:
   ip:
     type: string
     description: IP address to geolocate and analyze
     required: true
+github_url: ''
+x_url: ''

@@ -1,15 +1,15 @@
-# Save as: api_patterns.yaml
 name: asset-hunter
-description: "Pro crawler with 160+ secret patterns + 10+ rotating User-Agents (GoogleBot, BingBot, etc.)"
+description: Pro crawler with 160+ secret patterns + 10+ rotating User-Agents (GoogleBot,
+  BingBot, etc.)
 type: python
-author: LanManVan Team
+author: hmza
 version: 4.0.0
 tags:
-  - web
-  - crawler
-  - secrets
-  - api-keys
-  - user-agents
+- web
+- crawler
+- secrets
+- api-keys
+- user-agents
 options:
   url:
     type: string
@@ -22,7 +22,7 @@ options:
     default: asset_hunter.toml
   filter:
     type: string
-    default: ""
+    default: ''
   threads:
     type: integer
     default: 10
@@ -30,4 +30,6 @@ options:
     type: string
     default: inf
 required:
-  - url
+- url
+github_url: ''
+x_url: ''

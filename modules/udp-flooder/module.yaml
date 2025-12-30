@@ -1,12 +1,12 @@
 name: udp-flooder
-description: "UDP-based flood tool targeting specific ports/services"
+description: UDP-based flood tool targeting specific ports/services
 type: python
-author: "l0n3ly_nat & hmza"
+author: l0n3ly_nat & hmza
 version: 1.0.0
 tags:
-  - dos
-  - udp
-  - stress-test
+- dos
+- udp
+- stress-test
 options:
   target:
     type: string
@@ -26,4 +26,6 @@ options:
     description: Payload size in bytes
     required: false
     default: 512
-required:
+required: null
+github_url: ''
+x_url: ''

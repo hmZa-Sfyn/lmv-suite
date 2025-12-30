@@ -1,12 +1,12 @@
 name: http-interceptor
-description: "Proxy-like module to intercept and modify HTTP traffic in real-time"
+description: Proxy-like module to intercept and modify HTTP traffic in real-time
 type: python
-author: "l0n3ly_nat & hmza"
+author: l0n3ly_nat & hmza
 version: 1.0.0
 tags:
-  - web
-  - proxy
-  - mitm
+- web
+- proxy
+- mitm
 options:
   listen_port:
     type: integer
@@ -21,5 +21,7 @@ options:
     type: string
     description: Mode (sniffer, modifier, logger)
     required: false
-    default: "logger"
-required:
+    default: logger
+required: null
+github_url: ''
+x_url: ''

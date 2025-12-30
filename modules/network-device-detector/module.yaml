@@ -1,12 +1,13 @@
 name: network-device-detector
-description: "Detect and identify devices connected to the network with OS fingerprinting capabilities"
+description: Detect and identify devices connected to the network with OS fingerprinting
+  capabilities
 type: python
 author: l0n3ly_nat
 version: 1.0.0
 tags:
-  - network
-  - discovery
-  - fingerprinting
+- network
+- discovery
+- fingerprinting
 options:
   network:
     type: string
@@ -27,4 +28,6 @@ options:
     description: Fingerprint OS of discovered devices
     required: false
     default: true
-required:
+required: null
+github_url: ''
+x_url: ''

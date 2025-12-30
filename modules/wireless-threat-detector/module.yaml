@@ -1,12 +1,13 @@
 name: wireless-threat-detector
-description: "Detect wireless threats including jamming, spoofing, and suspicious network behavior"
+description: Detect wireless threats including jamming, spoofing, and suspicious network
+  behavior
 type: python
 author: l0n3ly_nat
 version: 1.0.0
 tags:
-  - wireless
-  - security
-  - threat-detection
+- wireless
+- security
+- threat-detection
 options:
   interface:
     type: string
@@ -22,4 +23,6 @@ options:
     description: Anomaly threshold
     required: false
     default: 10
-required:
+required: null
+github_url: ''
+x_url: ''

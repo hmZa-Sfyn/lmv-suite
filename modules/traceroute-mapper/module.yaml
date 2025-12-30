@@ -1,12 +1,12 @@
 name: traceroute-mapper
-description: "Custom traceroute implementation with hop visualization using Scapy"
+description: Custom traceroute implementation with hop visualization using Scapy
 type: python
-author: "l0n3ly_nat & hmza"
+author: l0n3ly_nat & hmza
 version: 1.0.0
 tags:
-  - network
-  - routing
-  - reconnaissance
+- network
+- routing
+- reconnaissance
 options:
   host:
     type: string
@@ -22,4 +22,6 @@ options:
     description: Timeout per hop in seconds
     required: false
     default: 2
-required:
+required: null
+github_url: ''
+x_url: ''

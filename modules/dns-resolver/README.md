@@ -11,6 +11,9 @@ Custom DNS query tool to resolve domains and display all record types
 ## Tags
 dns, reconnaissance, network
 
+
+## Links
+
 ## Options
 
 ### domain

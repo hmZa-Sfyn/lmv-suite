@@ -1,13 +1,13 @@
 name: voip-sniffer
-description: "Detect and capture VoIP (SIP/RTP) packets from network traffic"
+description: Detect and capture VoIP (SIP/RTP) packets from network traffic
 type: python
-author: "l0n3ly_nat & hmza"
+author: l0n3ly_nat & hmza
 version: 1.0.0
 tags:
-  - voip
-  - sniffing
-  - sip
-  - rtp
+- voip
+- sniffing
+- sip
+- rtp
 options:
   interface:
     type: string
@@ -23,4 +23,6 @@ options:
     description: Maximum packets to capture
     required: false
     default: 0
-required:
+required: null
+github_url: ''
+x_url: ''

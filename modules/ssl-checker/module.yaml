@@ -1,13 +1,15 @@
 name: ssl-checker
-description: "Check SSL certificate validity"
+description: Check SSL certificate validity
 type: python
-author: LanManVan Team
+author: hmza
 version: 1.0.0
 tags:
-  - security
-  - web
+- security
+- web
 options:
   domain:
     type: string
     description: Domain to check
     required: true
+github_url: ''
+x_url: ''

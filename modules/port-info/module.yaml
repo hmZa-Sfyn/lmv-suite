@@ -1,13 +1,15 @@
 name: port-info
-description: "Get information about common ports"
+description: Get information about common ports
 type: python
-author: LanManVan Team
+author: hmza
 version: 1.0.0
 tags:
-  - networking
-  - info
+- networking
+- info
 options:
   port:
     type: integer
     description: Port number to lookup
     required: true
+github_url: ''
+x_url: ''

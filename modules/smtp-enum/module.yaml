@@ -1,12 +1,12 @@
 name: smtp-enum
-description: "Enumerate valid email users on SMTP servers using VRFY/EXPN/RCPT"
+description: Enumerate valid email users on SMTP servers using VRFY/EXPN/RCPT
 type: python
-author: "l0n3ly_nat & hmza"
+author: l0n3ly_nat & hmza
 version: 1.0.0
 tags:
-  - smtp
-  - enumeration
-  - email
+- smtp
+- enumeration
+- email
 options:
   host:
     type: string
@@ -25,5 +25,7 @@ options:
     type: string
     description: Enumeration method (vrfy, expn, rcpt)
     required: false
-    default: "rcpt"
-required:
+    default: rcpt
+required: null
+github_url: ''
+x_url: ''
