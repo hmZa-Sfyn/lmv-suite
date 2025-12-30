@@ -1,0 +1,35 @@
+name: packet-crafter
+description: "Advanced custom packet builder with GUI-like CLI for any protocol"
+type: python
+author: l0n3ly_nat
+version: 1.0.0
+tags:
+  - networking
+  - protocol
+  - packet-building
+options:
+  protocol:
+    type: string
+    description: Protocol (IP, TCP, UDP, ICMP, DNS)
+    required: true
+  dst:
+    type: string
+    description: Destination IP
+    required: false
+  src:
+    type: string
+    description: Source IP
+    required: false
+  dport:
+    type: integer
+    description: Destination port
+    required: false
+  sport:
+    type: integer
+    description: Source port
+    required: false
+  payload:
+    type: string
+    description: Payload data
+    required: false
+required:

@@ -1,0 +1,25 @@
+name: vpn-tunnel
+description: "Simple IP-over-ICMP or DNS tunneling for bypassing restrictions"
+type: python
+author: l0n3ly_nat
+version: 1.0.0
+tags:
+  - vpn
+  - tunneling
+  - network
+options:
+  mode:
+    type: string
+    description: Tunnel mode (icmp, dns)
+    required: false
+    default: "icmp"
+  server:
+    type: string
+    description: Server IP address
+    required: false
+  listen_port:
+    type: integer
+    description: Local listening port
+    required: false
+    default: 8080
+required:
