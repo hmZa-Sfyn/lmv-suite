@@ -51,7 +51,7 @@ func (cli *CLI) PrintHelp() {
 	}
 
 	fmt.Println()
-	color.New(color.FgYellow, color.Bold).Println("Advanced Argument Features:")
+	color.New(color.FgWhite, color.Bold).Println("Advanced Argument Features:")
 	fmt.Println()
 
 	advancedFeatures := []struct {
@@ -67,14 +67,14 @@ func (cli *CLI) PrintHelp() {
 
 	for _, feat := range advancedFeatures {
 		fmt.Printf("  %s%-20s %s\n",
-			color.BlueString("◆ "),
+			color.BlueString("- "),
 			color.CyanString(feat.name),
 			feat.desc,
 		)
 	}
 
 	fmt.Println()
-	color.New(color.FgMagenta, color.Bold).Println("Quick Examples:")
+	color.New(color.FgWhite, color.Bold).Println("Quick Examples:")
 	fmt.Println()
 
 	examples := []string{
@@ -84,8 +84,8 @@ func (cli *CLI) PrintHelp() {
 		"html-scraper url=\"https://example.com\" depth=\"2\" save=1",
 	}
 
-	for i, example := range examples {
-		fmt.Printf("  %d) %s\n", i+1, color.WhiteString(example))
+	for _, example := range examples {
+		fmt.Printf("  - %s\n", color.CyanString(example))
 	}
 
 	fmt.Println()
