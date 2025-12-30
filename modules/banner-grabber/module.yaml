@@ -1,0 +1,29 @@
+name: banner-grabber
+description: "Connect to services and grab banners to identify software versions"
+type: python
+author: l0n3ly_nat
+version: 1.0.0
+tags:
+  - reconnaissance
+  - banner
+  - enumeration
+options:
+  host:
+    type: string
+    description: Target host
+    required: true
+  port:
+    type: integer
+    description: Target port
+    required: true
+  timeout:
+    type: integer
+    description: Connection timeout in seconds
+    required: false
+    default: 5
+  protocol:
+    type: string
+    description: Protocol (raw, http, ftp, ssh)
+    required: false
+    default: "raw"
+required:

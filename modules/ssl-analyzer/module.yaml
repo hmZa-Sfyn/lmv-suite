@@ -1,0 +1,26 @@
+name: ssl-analyzer
+description: "Inspect TLS/SSL handshakes and certificates from target hosts"
+type: python
+author: l0n3ly_nat
+version: 1.0.0
+tags:
+  - ssl
+  - tls
+  - certificate
+  - reconnaissance
+options:
+  host:
+    type: string
+    description: Target host
+    required: true
+  port:
+    type: integer
+    description: Target port
+    required: false
+    default: 443
+  timeout:
+    type: integer
+    description: Connection timeout in seconds
+    required: false
+    default: 10
+required:

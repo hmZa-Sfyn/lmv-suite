@@ -1,0 +1,29 @@
+name: port-knocker
+description: "Perform port knocking sequences to open firewall ports stealthily"
+type: python
+author: l0n3ly_nat
+version: 1.0.0
+tags:
+  - network
+  - firewall
+  - stealth
+options:
+  host:
+    type: string
+    description: Target host
+    required: true
+  sequence:
+    type: string
+    description: Comma-separated port sequence (e.g., 1234,5678,9012)
+    required: true
+  delay:
+    type: float
+    description: Delay between knocks in seconds
+    required: false
+    default: 0.1
+  protocol:
+    type: string
+    description: Protocol to use (tcp, udp)
+    required: false
+    default: "tcp"
+required:

@@ -1,0 +1,29 @@
+name: smtp-enum
+description: "Enumerate valid email users on SMTP servers using VRFY/EXPN/RCPT"
+type: python
+author: l0n3ly_nat
+version: 1.0.0
+tags:
+  - smtp
+  - enumeration
+  - email
+options:
+  host:
+    type: string
+    description: SMTP server address
+    required: true
+  port:
+    type: integer
+    description: SMTP port
+    required: false
+    default: 25
+  wordlist:
+    type: string
+    description: User wordlist file
+    required: true
+  method:
+    type: string
+    description: Enumeration method (vrfy, expn, rcpt)
+    required: false
+    default: "rcpt"
+required:

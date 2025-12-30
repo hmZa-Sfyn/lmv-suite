@@ -1,0 +1,25 @@
+name: network-topology
+description: "Automatically discover and map local network devices and connections"
+type: python
+author: l0n3ly_nat
+version: 1.0.0
+tags:
+  - network
+  - discovery
+  - mapping
+options:
+  network:
+    type: string
+    description: Network range (e.g., 192.168.1.0/24)
+    required: true
+  threads:
+    type: integer
+    description: Number of threads
+    required: false
+    default: 10
+  timeout:
+    type: integer
+    description: Ping timeout
+    required: false
+    default: 2
+required:

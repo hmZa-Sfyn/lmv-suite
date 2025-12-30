@@ -1,0 +1,26 @@
+name: voip-sniffer
+description: "Detect and capture VoIP (SIP/RTP) packets from network traffic"
+type: python
+author: l0n3ly_nat
+version: 1.0.0
+tags:
+  - voip
+  - sniffing
+  - sip
+  - rtp
+options:
+  interface:
+    type: string
+    description: Network interface to sniff on
+    required: true
+  duration:
+    type: integer
+    description: Sniff duration in seconds
+    required: false
+    default: 60
+  packet_count:
+    type: integer
+    description: Maximum packets to capture
+    required: false
+    default: 0
+required:

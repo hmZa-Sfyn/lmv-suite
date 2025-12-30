@@ -1,0 +1,25 @@
+name: dhcp-starvation
+description: "Exhaust DHCP pool by requesting multiple IP addresses rapidly"
+type: python
+author: l0n3ly_nat
+version: 1.0.0
+tags:
+  - dos
+  - dhcp
+  - network
+options:
+  interface:
+    type: string
+    description: Network interface to use
+    required: true
+  count:
+    type: integer
+    description: Number of DHCP requests
+    required: false
+    default: 100
+  timeout:
+    type: integer
+    description: Timeout for each request
+    required: false
+    default: 5
+required:

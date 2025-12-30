@@ -1,0 +1,33 @@
+name: brute-ssh
+description: "Basic SSH brute-force module with wordlist support (for pentesting)"
+type: python
+author: l0n3ly_nat
+version: 1.0.0
+tags:
+  - ssh
+  - brute-force
+  - security
+options:
+  host:
+    type: string
+    description: Target SSH host
+    required: true
+  port:
+    type: integer
+    description: SSH port
+    required: false
+    default: 22
+  wordlist:
+    type: string
+    description: Path to wordlist file
+    required: true
+  username:
+    type: string
+    description: Username to brute-force
+    required: true
+  timeout:
+    type: integer
+    description: Connection timeout
+    required: false
+    default: 5
+required:

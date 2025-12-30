@@ -1,0 +1,25 @@
+name: wifi-scanner
+description: "Passive Wi-Fi network scanner to detect nearby access points and clients"
+type: python
+author: l0n3ly_nat
+version: 1.0.0
+tags:
+  - wifi
+  - scanning
+  - wireless
+options:
+  interface:
+    type: string
+    description: Wireless interface name
+    required: true
+  duration:
+    type: integer
+    description: Scan duration in seconds
+    required: false
+    default: 10
+  packet_count:
+    type: integer
+    description: Number of packets to capture
+    required: false
+    default: 0
+required:

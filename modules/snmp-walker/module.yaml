@@ -1,0 +1,29 @@
+name: snmp-walker
+description: "Perform SNMP walks to extract system information from devices"
+type: python
+author: l0n3ly_nat
+version: 1.0.0
+tags:
+  - snmp
+  - enumeration
+  - reconnaissance
+options:
+  host:
+    type: string
+    description: Target host with SNMP
+    required: true
+  community:
+    type: string
+    description: SNMP community string
+    required: false
+    default: "public"
+  version:
+    type: string
+    description: SNMP version (1, 2c, 3)
+    required: false
+    default: "2c"
+  oid:
+    type: string
+    description: OID to walk (default: 1.3.6.1.2.1)
+    required: false
+required:

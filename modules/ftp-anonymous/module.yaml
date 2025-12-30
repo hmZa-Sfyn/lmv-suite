@@ -1,0 +1,30 @@
+name: ftp-anonymous
+description: "Automated checker for anonymous FTP login and directory listing"
+type: python
+author: l0n3ly_nat
+version: 1.0.0
+tags:
+  - ftp
+  - enumeration
+  - anonymous
+options:
+  host:
+    type: string
+    description: FTP server address
+    required: true
+  port:
+    type: integer
+    description: FTP port
+    required: false
+    default: 21
+  timeout:
+    type: integer
+    description: Connection timeout
+    required: false
+    default: 5
+  depth:
+    type: integer
+    description: Directory recursion depth
+    required: false
+    default: 2
+required:

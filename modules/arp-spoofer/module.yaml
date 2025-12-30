@@ -1,0 +1,29 @@
+name: arp-spoofer
+description: "Perform ARP spoofing to intercept traffic on a local network (MITM setup)"
+type: python
+author: l0n3ly_nat
+version: 1.0.0
+tags:
+  - network
+  - mitm
+  - arp
+options:
+  target_ip:
+    type: string
+    description: Target IP address to spoof
+    required: true
+  gateway_ip:
+    type: string
+    description: Gateway IP address
+    required: true
+  interface:
+    type: string
+    description: Network interface to use
+    required: false
+    default: "eth0"
+  duration:
+    type: integer
+    description: Duration in seconds (0 for infinite)
+    required: false
+    default: 60
+required:

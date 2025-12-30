@@ -1,0 +1,25 @@
+name: traceroute-mapper
+description: "Custom traceroute implementation with hop visualization using Scapy"
+type: python
+author: l0n3ly_nat
+version: 1.0.0
+tags:
+  - network
+  - routing
+  - reconnaissance
+options:
+  host:
+    type: string
+    description: Target host
+    required: true
+  max_hops:
+    type: integer
+    description: Maximum number of hops
+    required: false
+    default: 30
+  timeout:
+    type: integer
+    description: Timeout per hop in seconds
+    required: false
+    default: 2
+required:

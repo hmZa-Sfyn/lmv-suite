@@ -1,0 +1,24 @@
+name: mac-changer
+description: "Change the MAC address of a network interface temporarily"
+type: python
+author: l0n3ly_nat
+version: 1.0.0
+tags:
+  - network
+  - spoofing
+  - configuration
+options:
+  interface:
+    type: string
+    description: Network interface name
+    required: true
+  mac:
+    type: string
+    description: New MAC address (format: XX:XX:XX:XX:XX:XX)
+    required: false
+  action:
+    type: string
+    description: Action (change, reset, random)
+    required: false
+    default: "change"
+required:

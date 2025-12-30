@@ -1,0 +1,28 @@
+name: icmp-redirect
+description: "Send fake ICMP redirect packets to manipulate routing tables"
+type: python
+author: l0n3ly_nat
+version: 1.0.0
+tags:
+  - network
+  - mitm
+  - routing
+options:
+  gateway:
+    type: string
+    description: Current gateway IP
+    required: true
+  target:
+    type: string
+    description: Target IP to redirect
+    required: true
+  redirect_to:
+    type: string
+    description: IP to redirect traffic to
+    required: true
+  interface:
+    type: string
+    description: Network interface
+    required: false
+    default: "eth0"
+required:

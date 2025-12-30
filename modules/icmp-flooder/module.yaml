@@ -1,0 +1,30 @@
+name: icmp-flooder
+description: "Simple ICMP ping flood tool for stress testing network responsiveness"
+type: python
+author: l0n3ly_nat
+version: 1.0.0
+tags:
+  - dos
+  - icmp
+  - stress-test
+options:
+  target:
+    type: string
+    description: Target IP address
+    required: true
+  count:
+    type: integer
+    description: Number of packets to send
+    required: false
+    default: 100
+  packet_size:
+    type: integer
+    description: Packet size in bytes
+    required: false
+    default: 56
+  interval:
+    type: float
+    description: Interval between packets in seconds
+    required: false
+    default: 0.1
+required:

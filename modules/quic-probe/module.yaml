@@ -1,0 +1,30 @@
+name: quic-probe
+description: "Probe and analyze QUIC/HTTP3 traffic characteristics and server support"
+type: python
+author: l0n3ly_nat
+version: 1.0.0
+tags:
+  - quic
+  - http3
+  - network
+options:
+  host:
+    type: string
+    description: Target host
+    required: true
+  port:
+    type: integer
+    description: QUIC port (usually 443)
+    required: false
+    default: 443
+  timeout:
+    type: integer
+    description: Connection timeout
+    required: false
+    default: 5
+  probe_type:
+    type: string
+    description: Probe type (handshake, version, initial)
+    required: false
+    default: "handshake"
+required:
