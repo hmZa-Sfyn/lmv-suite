@@ -3,6 +3,11 @@
 # Improved setup script for LanManVan CLI
 # Installs binary, sets up aliases, copies modules folder
 
+#
+# Contributor: @l0n3ly_nat at x.com
+# changes: optimized some things here and there. 15:32 - Tuesday
+#
+
 set -e
 
 echo "🚀 Setting up LanManVan CLI..."
