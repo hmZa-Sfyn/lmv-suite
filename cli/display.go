@@ -235,7 +235,7 @@ func (cli *CLI) PrintHistory() {
 
 		fmt.Printf("%s%s %s\n",
 			prefix,
-			color.GreenString(fmt.Sprintf("[%3d]", i+1)),
+			color.GreenString(fmt.Sprintf("[%d]", i+1)),
 			color.WhiteString(cmd),
 		)
 	}
