@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
-	"regexp"
 	"strings"
 	"sync"
 	"time"
@@ -461,64 +460,4 @@ func (cli *CLI) parseArguments(args []string) map[string]string {
 	}
 
 	return result
-}
-
-// DisplayModuleReadme displays and formats the README.md file for a module
-func (cli *CLI) DisplayModuleReadme(moduleName string) error {
-	module, err := cli.manager.GetModule(moduleName)
-	if err != nil {
-		return err
-	}
-
-	readmePath := filepath.Join(module.Path, "README.md")
-	content, err := ioutil.ReadFile(readmePath)
-	if err != nil {
-		// README doesn't exist, that's okay
-		return nil
-	}
-
-	lines := strings.Split(string(content), "\n")
-	fmt.Println()
-	fmt.Println(core.NmapBox("MODULE DOCUMENTATION"))
-
-	for _, line := range lines {
-		line = strings.TrimSpace(line)
-
-		// Skip empty lines
-		if line == "" {
-			fmt.Println()
-			continue
-		}
-
-		// Handle headers
-		if strings.HasPrefix(line, "# ") {
-			title := strings.TrimPrefix(line, "# ")
-			fmt.Println(core.Color("cyan", "╔═══════════════════════════════════════╗"))
-			fmt.Printf(core.Color("cyan", "║  ") + core.Color("bold", title) + core.Color("cyan", "\n"))
-			fmt.Println(core.Color("cyan", "╚═══════════════════════════════════════╝"))
-		} else if strings.HasPrefix(line, "## ") {
-			subtitle := strings.TrimPrefix(line, "## ")
-			fmt.Println(core.Color("yellow", "▶ "+subtitle))
-		} else if strings.HasPrefix(line, "### ") {
-			subsubtitle := strings.TrimPrefix(line, "### ")
-			fmt.Println(core.Color("white", "  ▪ "+subsubtitle))
-		} else if strings.HasPrefix(line, "- ") || strings.HasPrefix(line, "* ") {
-			// List items
-			item := regexp.MustCompile(`^[-*]\s+`).ReplaceAllString(line, "")
-			fmt.Println(core.Color("green", "  • "+item))
-		} else if strings.HasPrefix(line, "`") && strings.HasSuffix(line, "`") {
-			// Code inline
-			code := strings.TrimPrefix(strings.TrimSuffix(line, "`"), "`")
-			fmt.Println(core.Color("white", "    "+code))
-		} else if strings.HasPrefix(line, "**") && strings.HasSuffix(line, "**") {
-			// Bold text
-			text := strings.TrimPrefix(strings.TrimSuffix(line, "**"), "**")
-			fmt.Println(core.Color("bold", text))
-		} else {
-			// Regular text
-			fmt.Println(core.NmapSubBox(line))
-		}
-	}
-	fmt.Println()
-	return nil
 }
