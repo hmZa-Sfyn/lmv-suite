@@ -1,0 +1,11 @@
+=== Module Execution Log ===
+Module: xss-payload-gen
+Started: 2026-01-01T14:51:32+05:00
+================================
+
+Output saved to: logs/xss-payload-gen_2026-01-01_14-51-32.log
+Executing module 'xss-payload-gen'...
+Completed in 73.120606ms [exit: 0], success!
+
+================================
+Ended: 2026-01-01T14:51:32+05:00

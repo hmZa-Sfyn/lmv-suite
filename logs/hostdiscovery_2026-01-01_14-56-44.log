@@ -1,0 +1,170 @@
+=== Module Execution Log ===
+Module: hostdiscovery
+Started: 2026-01-01T14:56:44+05:00
+================================
+
+Output saved to: logs/hostdiscovery_2026-01-01_14-56-44.log
+Executing module 'hostdiscovery'...
+Module Output:
+[*] Starting host discovery on 154.54.23.0/24
+[*] Using 10 threads
+[*] Total hosts to scan: 254
+[-] Host 154.54.23.3 is DOWN
+[-] Host 154.54.23.10 is DOWN
+[-] Host 154.54.23.9 is DOWN
+[-] Host 154.54.23.5 is DOWN
+[-] Host 154.54.23.6 is DOWN
+[-] Host 154.54.23.1 is DOWN
+[-] Host 154.54.23.7 is DOWN
+[-] Host 154.54.23.8 is DOWN
+[-] Host 154.54.23.4 is DOWN
+[-] Host 154.54.23.2 is DOWN
+[*] Progress: 10/254 (3.9%)
+[-] Host 154.54.23.14 is DOWN
+[-] Host 154.54.23.13 is DOWN
+[-] Host 154.54.23.12 is DOWN
+[-] Host 154.54.23.11 is DOWN
+[-] Host 154.54.23.18 is DOWN
+[-] Host 154.54.23.15 is DOWN
+[-] Host 154.54.23.17 is DOWN
+[-] Host 154.54.23.19 is DOWN
+[-] Host 154.54.23.16 is DOWN
+[-] Host 154.54.23.20 is DOWN
+[*] Progress: 20/254 (7.9%)
+[-] Host 154.54.23.28 is DOWN
+[-] Host 154.54.23.24 is DOWN
+[-] Host 154.54.23.22 is DOWN
+[-] Host 154.54.23.23 is DOWN
+[-] Host 154.54.23.29 is DOWN
+[-] Host 154.54.23.26 is DOWN
+[-] Host 154.54.23.27 is DOWN
+[-] Host 154.54.23.25 is DOWN
+[-] Host 154.54.23.30 is DOWN
+[-] Host 154.54.23.21 is DOWN
+[*] Progress: 30/254 (11.8%)
+[-] Host 154.54.23.35 is DOWN
+[-] Host 154.54.23.34 is DOWN
+[-] Host 154.54.23.33 is DOWN
+[-] Host 154.54.23.32 is DOWN
+[-] Host 154.54.23.38 is DOWN
+[-] Host 154.54.23.39 is DOWN
+[-] Host 154.54.23.36 is DOWN
+[-] Host 154.54.23.37 is DOWN
+[-] Host 154.54.23.40 is DOWN
+[-] Host 154.54.23.31 is DOWN
+[*] Progress: 40/254 (15.7%)
+[-] Host 154.54.23.44 is DOWN
+[-] Host 154.54.23.46 is DOWN
+[-] Host 154.54.23.45 is DOWN
+[-] Host 154.54.23.43 is DOWN
+[-] Host 154.54.23.41 is DOWN
+[-] Host 154.54.23.42 is DOWN
+[-] Host 154.54.23.50 is DOWN
+[-] Host 154.54.23.49 is DOWN
+[-] Host 154.54.23.47 is DOWN
+[-] Host 154.54.23.48 is DOWN
+[*] Progress: 50/254 (19.7%)
+[-] Host 154.54.23.51 is DOWN
+[-] Host 154.54.23.53 is DOWN
+[-] Host 154.54.23.54 is DOWN
+[-] Host 154.54.23.52 is DOWN
+[-] Host 154.54.23.56 is DOWN
+[-] Host 154.54.23.55 is DOWN
+[-] Host 154.54.23.57 is DOWN
+[-] Host 154.54.23.60 is DOWN
+[-] Host 154.54.23.59 is DOWN
+[-] Host 154.54.23.58 is DOWN
+[*] Progress: 60/254 (23.6%)
+[-] Host 154.54.23.61 is DOWN
+[-] Host 154.54.23.63 is DOWN
+[-] Host 154.54.23.64 is DOWN
+[-] Host 154.54.23.62 is DOWN
+[-] Host 154.54.23.65 is DOWN
+[-] Host 154.54.23.67 is DOWN
+[-] Host 154.54.23.66 is DOWN
+[-] Host 154.54.23.68 is DOWN
+[-] Host 154.54.23.70 is DOWN
+[-] Host 154.54.23.69 is DOWN
+[*] Progress: 70/254 (27.6%)
+[-] Host 154.54.23.71 is DOWN
+[-] Host 154.54.23.73 is DOWN
+[-] Host 154.54.23.72 is DOWN
+[-] Host 154.54.23.74 is DOWN
+[-] Host 154.54.23.76 is DOWN
+[-] Host 154.54.23.75 is DOWN
+[-] Host 154.54.23.77 is DOWN
+[-] Host 154.54.23.79 is DOWN
+[-] Host 154.54.23.80 is DOWN
+[-] Host 154.54.23.78 is DOWN
+[*] Progress: 80/254 (31.5%)
+[-] Host 154.54.23.81 is DOWN
+[-] Host 154.54.23.82 is DOWN
+[-] Host 154.54.23.83 is DOWN
+[-] Host 154.54.23.84 is DOWN
+[-] Host 154.54.23.85 is DOWN
+[-] Host 154.54.23.88 is DOWN
+[-] Host 154.54.23.89 is DOWN
+[-] Host 154.54.23.86 is DOWN
+[-] Host 154.54.23.87 is DOWN
+[-] Host 154.54.23.90 is DOWN
+[*] Progress: 90/254 (35.4%)
+[-] Host 154.54.23.91 is DOWN
+[-] Host 154.54.23.92 is DOWN
+[-] Host 154.54.23.94 is DOWN
+[-] Host 154.54.23.93 is DOWN
+[-] Host 154.54.23.96 is DOWN
+[-] Host 154.54.23.95 is DOWN
+[-] Host 154.54.23.97 is DOWN
+[-] Host 154.54.23.99 is DOWN
+[-] Host 154.54.23.98 is DOWN
+[-] Host 154.54.23.100 is DOWN
+[*] Progress: 100/254 (39.4%)
+
+Module Error Output:
+Traceback (most recent call last):
+  File "/home/hmza/lanmanvan/modules/hostdiscovery/main.py", line 50, in main
+    for future in concurrent.futures.as_completed(futures):
+                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/usr/lib/python3.13/concurrent/futures/_base.py", line 243, in as_completed
+    waiter.event.wait(wait_timeout)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/threading.py", line 660, in wait
+    signaled = self._cond.wait(timeout)
+  File "/usr/lib/python3.13/threading.py", line 359, in wait
+    waiter.acquire()
+    ~~~~~~~~~~~~~~^^
+KeyboardInterrupt
+During handling of the above exception, another exception occurred:
+Traceback (most recent call last):
+  File "/home/hmza/lanmanvan/modules/hostdiscovery/main.py", line 76, in <module>
+    main()
+    ~~~~^^
+  File "/home/hmza/lanmanvan/modules/hostdiscovery/main.py", line 47, in main
+    with concurrent.futures.ThreadPoolExecutor(max_workers=threads) as executor:
+         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/concurrent/futures/_base.py", line 647, in __exit__
+    self.shutdown(wait=True)
+    ~~~~~~~~~~~~~^^^^^^^^^^^
+  File "/usr/lib/python3.13/concurrent/futures/thread.py", line 239, in shutdown
+    t.join()
+    ~~~~~~^^
+  File "/usr/lib/python3.13/threading.py", line 1095, in join
+    self._handle.join(timeout)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyboardInterrupt
+Exception ignored on threading shutdown:
+Traceback (most recent call last):
+  File "/usr/lib/python3.13/threading.py", line 1537, in _shutdown
+    atexit_call()
+  File "/usr/lib/python3.13/threading.py", line 1508, in <lambda>
+    _threading_atexits.append(lambda: func(*arg, **kwargs))
+  File "/usr/lib/python3.13/concurrent/futures/thread.py", line 31, in _python_exit
+    t.join()
+  File "/usr/lib/python3.13/threading.py", line 1095, in join
+    self._handle.join(timeout)
+KeyboardInterrupt:
+
+Failed in 12.301391572s [exit: -1], skipping...
+
+================================
+Ended: 2026-01-01T14:56:57+05:00

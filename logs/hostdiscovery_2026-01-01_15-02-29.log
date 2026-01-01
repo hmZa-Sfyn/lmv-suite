@@ -1,0 +1,78 @@
+=== Module Execution Log ===
+Module: hostdiscovery
+Started: 2026-01-01T15:02:29+05:00
+================================
+
+Output saved to: logs/hostdiscovery_2026-01-01_15-02-29.log
+Executing module 'hostdiscovery'...
+[*] Starting host discovery on 154.54.23.0/24
+[*] Using 10 threads
+[*] Total hosts to scan: 254
+[-] Host 154.54.23.1 is DOWN
+[-] Host 154.54.23.4 is DOWN
+[-] Host 154.54.23.2 is DOWN
+[-] Host 154.54.23.5 is DOWN
+[-] Host 154.54.23.3 is DOWN
+[-] Host 154.54.23.7 is DOWN
+[-] Host 154.54.23.6 is DOWN
+[-] Host 154.54.23.8 is DOWN
+[-] Host 154.54.23.10 is DOWN
+[-] Host 154.54.23.9 is DOWN
+[*] Progress: 10/254 (3.9%)
+[-] Host 154.54.23.11 is DOWN
+[-] Host 154.54.23.14 is DOWN
+[-] Host 154.54.23.12 is DOWN
+[-] Host 154.54.23.18 is DOWN
+[-] Host 154.54.23.20 is DOWN
+[-] Host 154.54.23.13 is DOWN
+[-] Host 154.54.23.19 is DOWN
+[-] Host 154.54.23.16 is DOWN
+[-] Host 154.54.23.15 is DOWN
+[-] Host 154.54.23.17 is DOWN
+[*] Progress: 20/254 (7.9%)
+Traceback (most recent call last):
+  File "/home/hmza/lanmanvan/modules/hostdiscovery/main.py", line 50, in main
+    for future in concurrent.futures.as_completed(futures):
+                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/usr/lib/python3.13/concurrent/futures/_base.py", line 243, in as_completed
+    waiter.event.wait(wait_timeout)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/threading.py", line 660, in wait
+    signaled = self._cond.wait(timeout)
+  File "/usr/lib/python3.13/threading.py", line 359, in wait
+    waiter.acquire()
+    ~~~~~~~~~~~~~~^^
+KeyboardInterrupt
+During handling of the above exception, another exception occurred:
+Traceback (most recent call last):
+  File "/home/hmza/lanmanvan/modules/hostdiscovery/main.py", line 76, in <module>
+    main()
+    ~~~~^^
+  File "/home/hmza/lanmanvan/modules/hostdiscovery/main.py", line 47, in main
+    with concurrent.futures.ThreadPoolExecutor(max_workers=threads) as executor:
+         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/concurrent/futures/_base.py", line 647, in __exit__
+    self.shutdown(wait=True)
+    ~~~~~~~~~~~~~^^^^^^^^^^^
+  File "/usr/lib/python3.13/concurrent/futures/thread.py", line 239, in shutdown
+    t.join()
+    ~~~~~~^^
+  File "/usr/lib/python3.13/threading.py", line 1095, in join
+    self._handle.join(timeout)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyboardInterrupt
+Exception ignored on threading shutdown:
+Traceback (most recent call last):
+  File "/usr/lib/python3.13/threading.py", line 1537, in _shutdown
+    atexit_call()
+  File "/usr/lib/python3.13/threading.py", line 1508, in <lambda>
+    _threading_atexits.append(lambda: func(*arg, **kwargs))
+  File "/usr/lib/python3.13/concurrent/futures/thread.py", line 31, in _python_exit
+    t.join()
+  File "/usr/lib/python3.13/threading.py", line 1095, in join
+    self._handle.join(timeout)
+KeyboardInterrupt: 
+Failed in 22.283141887s [exit: -1], skipping...
+
+================================
+Ended: 2026-01-01T15:02:51+05:00
