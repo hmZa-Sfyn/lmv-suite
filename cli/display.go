@@ -197,7 +197,7 @@ func (cli *CLI) SearchModules(keyword string) {
 }
 
 // ShowModuleInfo displays detailed module information
-func (cli *CLI) ShowModuleInfo(moduleName string) {
+func (cli *CLI) ShowModuleInfo(moduleName string, showREADME int) {
 	module, err := cli.manager.GetModule(moduleName)
 	if err != nil {
 		core.PrintError(fmt.Sprintf("Error: %v, skipping...", err))
@@ -267,8 +267,9 @@ func (cli *CLI) ShowModuleInfo(moduleName string) {
 	}
 
 	// Display README as "About This Module"
-	cli.displayReadme(moduleName, module)
-
+	if showREADME == 1 {
+		cli.displayReadme(moduleName, module)
+	}
 	fmt.Println()
 }
 

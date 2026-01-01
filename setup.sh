@@ -6,6 +6,13 @@ BIN_DIR="$HOME/bin"
 LANMANVAN_DIR="$HOME/lanmanvan"
 MODULES_DEST="$LANMANVAN_DIR/modules"
 REPO_FILE="./modules/repo_url.yaml"
+LMV_MODULE_PY="./lmv_module.py"  # Assume this file exists in current dir
+
+# Check if lmv_module.py exists in current dir
+if [ ! -f "$LMV_MODULE_PY" ]; then
+    echo "Error: $LMV_MODULE_PY not found in current directory! Please create it first." >&2
+    exit 1
+fi
 
 mkdir -p "$BIN_DIR" "$LANMANVAN_DIR" "$MODULES_DEST"
 
@@ -25,6 +32,10 @@ if [ ! -f "$REPO_FILE" ]; then
     echo "Error: $REPO_FILE not found in current directory!" >&2
     exit 1
 fi
+
+# Copy repo_url.yaml to LANMANVAN_DIR for later use by lmv_module.py
+cp "$REPO_FILE" "$LANMANVAN_DIR/repo_url.yaml"
+echo "✓ Copied repo_url.yaml to $LANMANVAN_DIR"
 
 # Load repo URLs from repo_url.yaml using a simple parser (supports key: "url" format)
 declare -A REPOS
@@ -112,6 +123,10 @@ for version_file in VERSION.taml VERSION.yaml VERSION.yml; do
     fi
 done
 
+# Copy lmv_module.py to LANMANVAN_DIR
+cp "$LMV_MODULE_PY" "$LANMANVAN_DIR/lmv_module.py"
+echo "✓ Copied lmv_module.py to $LANMANVAN_DIR"
+
 # Alias helper
 add_or_update_alias() {
     local rc_file="$1"
@@ -124,16 +139,18 @@ add_or_update_alias() {
     echo "alias $name='$cmd'" >> "$rc_file"
 }
 
-# Add aliases
+# Add aliases, including lmv_module to run the Python script
 for rc in "$HOME/.zshrc" "$HOME/.bashrc" "$HOME/.bash_profile" "$HOME/.zprofile"; do
     [ -f "$rc" ] || continue
     add_or_update_alias "$rc" "lanmanvan" "lanmanvan -modules $MODULES_DEST"
     add_or_update_alias "$rc" "lmvconsole" "lanmanvan -modules $MODULES_DEST"
     add_or_update_alias "$rc" "lmv_update" \
         "cd /tmp && rm -rf lanmanvan && git clone https://github.com/hmZa-Sfyn/lanmanvan && cd lanmanvan && chmod +x setup.sh && ./setup.sh"
+    add_or_update_alias "$rc" "lmv_module" "python3 $LANMANVAN_DIR/lmv_module.py \"\$@\""
 done
 
 echo "✔ LanManVan installed successfully!"
 echo "✔ Binary: $BIN_DIR/lanmanvan"
 echo "✔ Modules directory: $MODULES_DEST"
+echo "✔ lmv_module.py copied and alias added"
 echo "✔ Reload your shell or run: source ~/.zshrc || source ~/.bashrc"

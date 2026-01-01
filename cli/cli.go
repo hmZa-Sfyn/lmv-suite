@@ -133,7 +133,7 @@ func (cli *CLI) ExecuteCommand(input string) {
 		}
 	case "info":
 		if len(args) > 0 {
-			cli.ShowModuleInfo(args[0])
+			cli.ShowModuleInfo(args[0], 1)
 		} else {
 			core.PrintError("Usage: info <module_name> ... example: info network")
 		}
@@ -174,7 +174,7 @@ func (cli *CLI) ExecuteCommand(input string) {
 		// Check if command ends with ! (show module info)
 		if strings.HasSuffix(cmd, "!") {
 			moduleName := strings.TrimSuffix(cmd, "!")
-			cli.ShowModuleInfo(moduleName)
+			cli.ShowModuleInfo(moduleName, 0)
 		} else {
 			// Try to run as a module if command is not recognized
 			cli.RunModule(cmd, args)
