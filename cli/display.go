@@ -570,6 +570,8 @@ func (cli *CLI) PrintBuiltins() {
 						}
 						fmt.Printf("%s%s\n", examplePrefix, color.MagentaString(example))
 					}
+					// Add extra space after examples
+					fmt.Println()
 				}
 
 				if !isLast {
