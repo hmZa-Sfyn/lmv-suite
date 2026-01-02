@@ -375,9 +375,13 @@ func (cli *CLI) executePipedCommands(input string) {
 		}
 	}
 
-	fmt.Println()
-	fmt.Println(result)
-	fmt.Println()
+	// Only print result if the last command is not file() - file() handles its own output
+	lastCmd := strings.TrimSpace(parts[len(parts)-1])
+	if !strings.HasPrefix(lastCmd, "file(") {
+		fmt.Println()
+		fmt.Println(result)
+		fmt.Println()
+	}
 }
 
 // executePipedCommand executes a single command in a pipe chain
