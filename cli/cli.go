@@ -9,21 +9,23 @@ import (
 
 // CLI manages the interactive command-line interface
 type CLI struct {
-	manager *core.ModuleManager
-	running bool
-	history []string
-	envMgr  *EnvironmentManager
-	logger  *Logger
+	manager  *core.ModuleManager
+	running  bool
+	history  []string
+	envMgr   *EnvironmentManager
+	logger   *Logger
+	builtins *BuiltinRegistry
 }
 
 // NewCLI creates a new CLI instance
 func NewCLI(modulesDir string) *CLI {
 	return &CLI{
-		manager: core.NewModuleManager(modulesDir),
-		running: true,
-		history: make([]string, 0),
-		envMgr:  NewEnvironmentManager(),
-		logger:  NewLogger(),
+		manager:  core.NewModuleManager(modulesDir),
+		running:  true,
+		history:  make([]string, 0),
+		envMgr:   NewEnvironmentManager(),
+		logger:   NewLogger(),
+		builtins: NewBuiltinRegistry(),
 	}
 }
 
@@ -125,6 +127,8 @@ func (cli *CLI) ExecuteCommand(input string) {
 		cli.ListModules()
 	case "env", "envs":
 		cli.envMgr.Display()
+	case "builtins":
+		cli.PrintBuiltins()
 	case "search":
 		if len(args) > 0 {
 			cli.SearchModules(strings.Join(args, " "))

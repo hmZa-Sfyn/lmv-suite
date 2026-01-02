@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"sync"
 	"time"
@@ -400,8 +401,11 @@ func (cli *CLI) DeleteModule(moduleName string) {
 	fmt.Println()
 }
 
-// parseArguments parses command-line arguments with support for quoted strings
-// Supports: arg="value with spaces", arg='value', arg=value
+// parseArguments parses command-line arguments with support for quoted strings and variable expansion
+// Supports:
+//   - arg="value with spaces", arg='value', arg=value
+//   - arg=$some_var (expand variable)
+//   - arg=$(builtin_func arg1 arg2) (execute builtin function)
 func (cli *CLI) parseArguments(args []string) map[string]string {
 	result := make(map[string]string)
 	i := 0
@@ -436,6 +440,8 @@ func (cli *CLI) parseArguments(args []string) map[string]string {
 					}
 				}
 
+				// Expand variables and builtins in the value
+				value = cli.expandValue(value)
 				result[key] = value
 			}
 		} else if i+2 < len(args) && args[i+1] == "=" {
@@ -449,6 +455,8 @@ func (cli *CLI) parseArguments(args []string) map[string]string {
 				value = value[1 : len(value)-1]
 			}
 
+			// Expand variables and builtins in the value
+			value = cli.expandValue(value)
 			result[key] = value
 			i += 2 // Skip the = and value
 		} else {
@@ -460,4 +468,67 @@ func (cli *CLI) parseArguments(args []string) map[string]string {
 	}
 
 	return result
+}
+
+// expandValue expands variables and builtin function calls in a value
+// Supports: $varname, $(builtin_func arg1 arg2)
+func (cli *CLI) expandValue(value string) string {
+	// First, handle builtin function calls: $(func arg1 arg2)
+	value = cli.expandBuiltins(value)
+
+	// Then, handle variable expansion: $variable_name
+	value = cli.expandVariables(value)
+
+	return value
+}
+
+// expandBuiltins expands builtin function calls in $(func args) format
+func (cli *CLI) expandBuiltins(value string) string {
+	// Pattern: $(builtin_name arg1 arg2 ...)
+	builtinPattern := regexp.MustCompile(`\$\(([^)]+)\)`)
+
+	return builtinPattern.ReplaceAllStringFunc(value, func(match string) string {
+		// Extract content between $( and )
+		content := match[2 : len(match)-1]
+		parts := strings.Fields(content)
+
+		if len(parts) == 0 {
+			return match // Return original if empty
+		}
+
+		funcName := parts[0]
+		funcArgs := parts[1:]
+
+		// Execute builtin function
+		result, err := cli.builtins.Execute(funcName, funcArgs...)
+		if err != nil {
+			core.PrintWarning(fmt.Sprintf("Builtin function '%s' error: %v", funcName, err))
+			return match
+		}
+
+		return result
+	})
+}
+
+// expandVariables expands $variable_name references
+func (cli *CLI) expandVariables(value string) string {
+	// Pattern: $varname (word characters only)
+	variablePattern := regexp.MustCompile(`\$([a-zA-Z_][a-zA-Z0-9_]*)`)
+
+	return variablePattern.ReplaceAllStringFunc(value, func(match string) string {
+		varName := match[1:] // Remove the $
+
+		// First check global environment variables
+		if val, exists := cli.envMgr.Get(varName); exists {
+			return val
+		}
+
+		// Then check system environment variables
+		if val, exists := os.LookupEnv(varName); exists {
+			return val
+		}
+
+		// Return original if not found
+		return match
+	})
 }

@@ -32,6 +32,7 @@ func (cli *CLI) PrintHelp() {
 		{"<module> [args]", "Shorthand: <module> arg_key=value, example: network ip=192.168.1.1"},
 		{"<module> arg_key = value", "Format with spaces (alternative), example: network ip = 192.168.1.1"},
 		{"env, envs", "Show all global environment variables, aliases: envs"},
+		{"builtins", "Show all 30+ builtin functions with examples"},
 		{"key=value", "Set global environment variable (persistent), example: timeout=10"},
 		{"key=?", "View global environment variable value, example: timeout=?"},
 		{"create <name> [type]", "Create a new module (python/bash), example: create mymodule python"},
@@ -60,6 +61,9 @@ func (cli *CLI) PrintHelp() {
 	}{
 		{"Quoted Strings", "Pass multi-word arguments: arg=\"from here to there\" time=\"15:45 4/6/2025\"."},
 		{"Single Quotes", "Alternative quote style: arg='value with spaces'."},
+		{"Variable Expansion", "Use $var_name: run module target=$mytarget (from global env or system env)."},
+		{"Builtin Functions", "Execute builtins in args: run module pwd=$(pwd) hash=$(sha256 password)."},
+		{"Combined Usage", "Mix variables and builtins: run module path=$workdir sig=$(sha256 $password)."},
 		{"Save Output", "Save module execution to log file: module_name arg=value save=1 ."},
 		{"Threaded Execution", "Run module with multiple threads: module_name arg=value threads=5 ."},
 		{"Log Location", "Output files saved to ./logs/ with timestamp: module_2006-01-02_15-04-05.log ."},
@@ -74,6 +78,41 @@ func (cli *CLI) PrintHelp() {
 	}
 
 	fmt.Println()
+	color.New(color.FgWhite, color.Bold).Println("Variable & Function Examples:")
+	fmt.Println()
+
+	varExamples := []string{
+		"Set global var:      myhost=192.168.1.1",
+		"View global var:     myhost=?",
+		"Expand in module:    run scanner target=$myhost",
+		"Builtin function:    run hasher data=$(echo \"hello world\")",
+		"Combine both:        run crypto key=$(sha256 $password) iv=$(pwd)",
+		"Network info:        run netmod local=$(ipaddr) host=$(hostname)",
+		"Timestamp:           run logger timestamp=$(timestamp unix) save=1",
+		"File content:        run reader content=$(cat /tmp/file.txt)",
+	}
+
+	for _, example := range varExamples {
+		fmt.Printf("  %s\n", color.GreenString(example))
+	}
+
+	fmt.Println()
+	color.New(color.FgWhite, color.Bold).Println("Shell Commands (prefix with $):")
+	fmt.Println()
+
+	shellExamples := []string{
+		"$ ls -la                      (Execute shell command)",
+		"$ cd /tmp && pwd              (Change directory and execute)",
+		"$ ifconfig eth0               (Get interface info)",
+		"$ whoami                      (Current user)",
+		"$ date                        (System date)",
+	}
+
+	for _, example := range shellExamples {
+		fmt.Printf("  %s\n", color.YellowString(example))
+	}
+
+	fmt.Println()
 	color.New(color.FgWhite, color.Bold).Println("Quick Examples:")
 	fmt.Println()
 
@@ -82,6 +121,7 @@ func (cli *CLI) PrintHelp() {
 		"dns-resolver domain=\"google.com\" save=1",
 		"port-scanner target=\"192.168.1.0/24\" threads=10 save=1",
 		"html-scraper url=\"https://example.com\" depth=\"2\" save=1",
+		"network-info local=$(ipaddr) hostname=$(hostname)",
 	}
 
 	for _, example := range examples {
@@ -366,6 +406,78 @@ func (cli *CLI) PrintHistory() {
 		)
 	}
 
+	fmt.Println()
+}
+
+// PrintBuiltins prints all available builtin functions
+func (cli *CLI) PrintBuiltins() {
+	fmt.Println()
+	fmt.Println(core.NmapBox("BUILTIN FUNCTIONS (30+)"))
+	fmt.Println()
+
+	builtins := cli.builtins.GetAll()
+
+	// Group builtins by category
+	categories := map[string][]*BuiltinFunction{
+		"File System": {},
+		"Hashing":     {},
+		"Encoding":    {},
+		"Strings":     {},
+		"Network":     {},
+		"Math":        {},
+		"System":      {},
+		"Utilities":   {},
+	}
+
+	// Categorize builtins
+	for _, fn := range builtins {
+		switch fn.Name {
+		case "pwd", "cd", "ls", "mkdir", "rm", "cp", "mv", "cat":
+			categories["File System"] = append(categories["File System"], fn)
+		case "md5", "sha1", "sha256":
+			categories["Hashing"] = append(categories["Hashing"], fn)
+		case "base64", "hex", "url", "json":
+			categories["Encoding"] = append(categories["Encoding"], fn)
+		case "strlen", "toupper", "tolower", "reverse", "trim":
+			categories["Strings"] = append(categories["Strings"], fn)
+		case "ping", "nslookup", "ipaddr":
+			categories["Network"] = append(categories["Network"], fn)
+		case "calc":
+			categories["Math"] = append(categories["Math"], fn)
+		case "whoami", "hostname", "date", "uname", "env", "which":
+			categories["System"] = append(categories["System"], fn)
+		default:
+			categories["Utilities"] = append(categories["Utilities"], fn)
+		}
+	}
+
+	// Display by category
+	for category, fns := range categories {
+		if len(fns) == 0 {
+			continue
+		}
+
+		fmt.Printf("   %s\n", color.CyanString(category))
+		for i, fn := range fns {
+			isLast := i == len(fns)-1
+			prefix := "   ├─ "
+			if isLast {
+				prefix = "   └─ "
+			}
+			fmt.Printf("%s%-18s - %s\n",
+				prefix,
+				color.GreenString(fn.Name),
+				fn.Description,
+			)
+		}
+		fmt.Println()
+	}
+
+	fmt.Println("   Usage Examples:")
+	fmt.Println("   ├─ Set variable from builtin:  myvar=$(pwd)")
+	fmt.Println("   ├─ Use in module arg:         run mymodule target=$(hostname)")
+	fmt.Println("   ├─ Hash string:               run mymodule sig=$(sha256 mypassword)")
+	fmt.Println("   └─ Expand var:                run mymodule addr=$ip_address")
 	fmt.Println()
 }
 
