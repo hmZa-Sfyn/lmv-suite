@@ -427,7 +427,7 @@ func (cli *CLI) executePipedCommand(cmd string, input string) (string, error) {
 	if len(parts) > 0 {
 		moduleName := parts[0]
 		args := parts[1:]
-		
+
 		// Check if module exists
 		if _, err := cli.manager.GetModule(moduleName); err == nil {
 			// Execute module and capture output
@@ -440,7 +440,7 @@ func (cli *CLI) executePipedCommand(cmd string, input string) (string, error) {
 
 // executeModuleForPipe executes a module and returns its output
 func (cli *CLI) executeModuleForPipe(moduleName string, args []string) (string, error) {
-	module, err := cli.manager.GetModule(moduleName)
+	_, err := cli.manager.GetModule(moduleName)
 	if err != nil {
 		return "", err
 	}
