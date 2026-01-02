@@ -384,7 +384,7 @@ func (cli *CLI) executePipedCommands(input string) {
 func (cli *CLI) executePipedCommand(cmd string, input string) (string, error) {
 	cmd = strings.TrimSpace(cmd)
 
-	// If input from previous command, inject it
+	// If input from previous command, inject it as first argument
 	if input != "" {
 		// If command is a builtin function call, append input as argument
 		if strings.Contains(cmd, "(") {
@@ -400,6 +400,14 @@ func (cli *CLI) executePipedCommand(cmd string, input string) (string, error) {
 				}
 				cmd = funcName + "(" + args + ")"
 			}
+		} else {
+			// It's a module call, append input as first argument
+			// Format: modulename arg=value
+			if !strings.Contains(cmd, "=") {
+				cmd = cmd + " input=" + input
+			} else {
+				cmd = cmd + " input=" + input
+			}
 		}
 	}
 
@@ -414,7 +422,57 @@ func (cli *CLI) executePipedCommand(cmd string, input string) (string, error) {
 		}
 	}
 
+	// Try to execute as module
+	parts := strings.Fields(cmd)
+	if len(parts) > 0 {
+		moduleName := parts[0]
+		args := parts[1:]
+		
+		// Check if module exists
+		if _, err := cli.manager.GetModule(moduleName); err == nil {
+			// Execute module and capture output
+			return cli.executeModuleForPipe(moduleName, args)
+		}
+	}
+
 	return "", fmt.Errorf("invalid pipe command: %s", cmd)
+}
+
+// executeModuleForPipe executes a module and returns its output
+func (cli *CLI) executeModuleForPipe(moduleName string, args []string) (string, error) {
+	module, err := cli.manager.GetModule(moduleName)
+	if err != nil {
+		return "", err
+	}
+
+	// Parse arguments with support for variable expansion
+	moduleArgs := make(map[string]string)
+	parsedArgs := cli.parseArguments(args)
+
+	for key, value := range parsedArgs {
+		switch key {
+		case "threads", "save":
+			// Skip these
+		default:
+			moduleArgs[key] = value
+		}
+	}
+
+	// Merge global environment variables
+	for key, value := range cli.envMgr.GetAll() {
+		if _, exists := moduleArgs[key]; !exists {
+			moduleArgs[key] = value
+		}
+	}
+
+	// Execute module
+	result, err := cli.manager.ExecuteModule(moduleName, moduleArgs)
+	if err != nil {
+		return "", err
+	}
+
+	// Return output
+	return strings.TrimSpace(result.Output), nil
 }
 
 // executeSingleBuiltin executes a builtin and returns output
