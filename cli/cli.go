@@ -507,13 +507,37 @@ func (cli *CLI) executeModuleForPipe(moduleName string, args []string) (string, 
 		}
 	}
 
+	// Save original stdout to restore later
+	saveOut := os.Stdout
+	reader, writer, err := os.Pipe()
+	if err != nil {
+		// Fallback: execute without capturing stdout
+		result, execErr := cli.manager.ExecuteModule(moduleName, moduleArgs)
+		if execErr != nil {
+			return "", execErr
+		}
+		return strings.TrimSpace(result.Output), nil
+	}
+
+	// Redirect stdout to our pipe
+	os.Stdout = writer
+
 	// Execute module
 	result, err := cli.manager.ExecuteModule(moduleName, moduleArgs)
+
+	// Restore stdout
+	writer.Close()
+	os.Stdout = saveOut
+
+	// Read captured stdout (not used but needed to drain the pipe)
+	_ = reader
+	reader.Close()
+
 	if err != nil {
 		return "", err
 	}
 
-	// Return output
+	// Return the module output directly, which contains the structured output
 	return strings.TrimSpace(result.Output), nil
 }
 
