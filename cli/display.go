@@ -475,75 +475,117 @@ func (cli *CLI) PrintHistory() {
 	fmt.Println()
 }
 
-// PrintBuiltins prints all available builtin functions
+// PrintBuiltins prints all available builtin functions with detailed info
 func (cli *CLI) PrintBuiltins() {
 	fmt.Println()
-	fmt.Println(core.NmapBox("BUILTIN FUNCTIONS (30+)"))
+	fmt.Println(core.NmapBox("BUILTIN FUNCTIONS (60+) - DETAILED REFERENCE"))
 	fmt.Println()
 
 	builtins := cli.builtins.GetAll()
 
 	// Group builtins by category
 	categories := map[string][]*BuiltinFunction{
-		"File System": {},
-		"Hashing":     {},
-		"Encoding":    {},
-		"Strings":     {},
-		"Network":     {},
-		"Math":        {},
-		"System":      {},
-		"Utilities":   {},
+		"File System":        {},
+		"Hashing":            {},
+		"Encoding":           {},
+		"Strings":            {},
+		"Network Validation": {},
+		"Network":            {},
+		"Math":               {},
+		"System":             {},
+		"Utilities":          {},
 	}
 
 	// Categorize builtins
 	for _, fn := range builtins {
 		switch fn.Name {
-		case "pwd", "cd", "ls", "mkdir", "rm", "cp", "mv", "cat":
+		case "pwd", "cd", "ls", "mkdir", "rm", "cp", "mv", "cat", "exists", "filesize":
 			categories["File System"] = append(categories["File System"], fn)
-		case "md5", "sha1", "sha256":
+		case "md5", "sha1", "sha256", "hash", "checksum", "crc32":
 			categories["Hashing"] = append(categories["Hashing"], fn)
-		case "base64", "hex", "url", "json":
+		case "base64", "hex", "url", "json", "csv", "xml", "ascii", "unicode":
 			categories["Encoding"] = append(categories["Encoding"], fn)
-		case "strlen", "toupper", "tolower", "reverse", "trim":
+		case "strlen", "toupper", "tolower", "reverse", "trim", "substr", "replace", "split", "startswith", "endswith", "contains", "repeat":
 			categories["Strings"] = append(categories["Strings"], fn)
-		case "ping", "nslookup", "ipaddr":
+		case "isipv4", "isipv6", "isemail", "isurl", "ismac", "isdomain", "ispath", "isport", "iscdr", "getcidr", "getiprange", "ip2int", "int2ip", "reverseip", "parseurl":
+			categories["Network Validation"] = append(categories["Network Validation"], fn)
+		case "ping", "nslookup", "ipaddr", "gethostbyname", "getipversion", "iplookup", "getport", "getmac", "gateway", "getdns":
 			categories["Network"] = append(categories["Network"], fn)
-		case "calc":
+		case "calc", "abs", "min", "max", "sum", "avg", "random":
 			categories["Math"] = append(categories["Math"], fn)
-		case "whoami", "hostname", "date", "uname", "env", "which":
+		case "whoami", "hostname", "date", "uname", "arch", "ostype", "uptime", "ps", "getenv", "which":
 			categories["System"] = append(categories["System"], fn)
 		default:
 			categories["Utilities"] = append(categories["Utilities"], fn)
 		}
 	}
 
-	// Display by category
-	for category, fns := range categories {
+	// Display by category with detailed info
+	for _, category := range []string{"File System", "System", "Hashing", "Encoding", "Strings", "Network Validation", "Network", "Math", "Utilities"} {
+		fns := categories[category]
 		if len(fns) == 0 {
 			continue
 		}
 
-		fmt.Printf("   %s\n", color.CyanString(category))
+		fmt.Printf("   %s\n", color.CyanString(fmt.Sprintf("═ %s (%d) ═", category, len(fns))))
+
+		// Sort functions by name
+		sort.Slice(fns, func(i, j int) bool {
+			return fns[i].Name < fns[j].Name
+		})
+
 		for i, fn := range fns {
 			isLast := i == len(fns)-1
 			prefix := "   ├─ "
 			if isLast {
 				prefix = "   └─ "
 			}
-			fmt.Printf("%s%-18s - %s\n",
+
+			// Print function name and short description
+			fmt.Printf("%s%s %s\n",
 				prefix,
-				color.GreenString(fn.Name),
+				color.GreenString(fmt.Sprintf("%-15s", fn.Name)),
 				fn.Description,
 			)
+
+			// Print detailed description if available
+			if fn.DetailedDesc != "" {
+				detailPrefix := "   │  "
+				if isLast {
+					detailPrefix = "      "
+				}
+				fmt.Printf("%s%s\n", detailPrefix, color.WhiteString(fn.DetailedDesc))
+
+				// Print examples if available
+				if len(fn.Examples) > 0 {
+					fmt.Printf("%s%s\n", detailPrefix, color.YellowString("Examples:"))
+					for j, example := range fn.Examples {
+						examplePrefix := "   │     ├─ "
+						if isLast && j == len(fn.Examples)-1 {
+							examplePrefix = "        └─ "
+						} else if isLast {
+							examplePrefix = "        ├─ "
+						} else if j == len(fn.Examples)-1 {
+							examplePrefix = "   │     └─ "
+						}
+						fmt.Printf("%s%s\n", examplePrefix, color.MagentaString(example))
+					}
+				}
+
+				if !isLast {
+					fmt.Println()
+				}
+			}
 		}
 		fmt.Println()
 	}
 
-	fmt.Println("   Usage Examples:")
-	fmt.Println("   ├─ Set variable from builtin:  myvar=$(pwd)")
-	fmt.Println("   ├─ Use in module arg:         run mymodule target=$(hostname)")
-	fmt.Println("   ├─ Hash string:               run mymodule sig=$(sha256 mypassword)")
-	fmt.Println("   └─ Expand var:                run mymodule addr=$ip_address")
+	fmt.Println("   " + color.CyanString("═ Quick Reference ═"))
+	fmt.Println("   ├─ Call syntax:   " + color.YellowString("funcname(arg1, arg2, ...)"))
+	fmt.Println("   ├─ In module arg: " + color.YellowString("run module target=$(hostname)"))
+	fmt.Println("   ├─ Nested calls:  " + color.YellowString("echo($(sha256 password))"))
+	fmt.Println("   ├─ Variables:     " + color.YellowString("run module ip=$myip port=8080"))
+	fmt.Println("   └─ Quoted args:   " + color.YellowString("echo(\"hello world\")"))
 	fmt.Println()
 }
 

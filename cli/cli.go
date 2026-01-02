@@ -2,6 +2,7 @@ package cli
 
 import (
 	"fmt"
+	"os"
 	"strings"
 
 	"lanmanvan/core"
@@ -219,7 +220,11 @@ func (cli *CLI) Stop() {
 }
 
 // tryExecuteBuiltin attempts to execute a builtin function call
-// Syntax: funcname(arg1,arg2,arg3)
+// Syntax: funcname(arg1, arg2, arg3) with support for:
+// - Quoted strings: "hello world", 'single quotes'
+// - Nested builtins: $(builtin_name args)
+// - Variable expansion: $varname
+// - Operators: + - * / %
 func (cli *CLI) tryExecuteBuiltin(input string) bool {
 	openParen := strings.Index(input, "(")
 	closeParen := strings.LastIndex(input, ")")
@@ -236,14 +241,8 @@ func (cli *CLI) tryExecuteBuiltin(input string) bool {
 		return false
 	}
 
-	// Parse arguments (comma-separated)
-	var args []string
-	if argsStr != "" {
-		parts := strings.Split(argsStr, ",")
-		for _, part := range parts {
-			args = append(args, strings.TrimSpace(part))
-		}
-	}
+	// Parse arguments with proper handling of quotes, builtins, and variables
+	args := cli.parseAdvancedArguments(argsStr)
 
 	// Execute builtin
 	result, err := cli.builtins.Execute(funcName, args...)
@@ -257,4 +256,132 @@ func (cli *CLI) tryExecuteBuiltin(input string) bool {
 	fmt.Println()
 
 	return true
+}
+
+// parseAdvancedArguments parses function arguments with support for:
+// - Quoted strings (both "..." and '...')
+// - Nested builtins $(builtin args)
+// - Variable expansion $var
+// - Operators as separate tokens
+func (cli *CLI) parseAdvancedArguments(argsStr string) []string {
+	var args []string
+	var currentArg strings.Builder
+	i := 0
+
+	for i < len(argsStr) {
+		ch := argsStr[i]
+
+		// Handle quoted strings
+		if ch == '"' || ch == '\'' {
+			quote := ch
+			i++ // skip opening quote
+			for i < len(argsStr) && argsStr[i] != quote {
+				if argsStr[i] == '\\' && i+1 < len(argsStr) {
+					// Handle escape sequences
+					i++
+					currentArg.WriteByte(argsStr[i])
+				} else {
+					currentArg.WriteByte(argsStr[i])
+				}
+				i++
+			}
+			i++ // skip closing quote
+			continue
+		}
+
+		// Handle nested builtins: $(builtin args)
+		if ch == '$' && i+1 < len(argsStr) && argsStr[i+1] == '(' {
+			closeParen := strings.Index(argsStr[i+2:], ")")
+			if closeParen != -1 {
+				nestedCall := argsStr[i : i+closeParen+3]
+				expanded := cli.expandBuiltinCall(nestedCall)
+				currentArg.WriteString(expanded)
+				i += closeParen + 3
+				continue
+			}
+		}
+
+		// Handle variable expansion: $varname
+		if ch == '$' && i+1 < len(argsStr) && isValidVarChar(rune(argsStr[i+1])) {
+			i++ // skip $
+			var varName strings.Builder
+			for i < len(argsStr) && isValidVarChar(rune(argsStr[i])) {
+				varName.WriteByte(argsStr[i])
+				i++
+			}
+			varVal := cli.expandVariable(varName.String())
+			currentArg.WriteString(varVal)
+			continue
+		}
+
+		// Handle comma-separated arguments
+		if ch == ',' {
+			arg := strings.TrimSpace(currentArg.String())
+			if arg != "" {
+				args = append(args, arg)
+			}
+			currentArg.Reset()
+			i++
+			continue
+		}
+
+		// Handle spaces (but preserve in quoted strings)
+		if ch == ' ' {
+			i++
+			continue
+		}
+
+		currentArg.WriteByte(ch)
+		i++
+	}
+
+	// Add final argument
+	arg := strings.TrimSpace(currentArg.String())
+	if arg != "" {
+		args = append(args, arg)
+	}
+
+	return args
+}
+
+// isValidVarChar checks if a rune is valid in a variable name
+func isValidVarChar(r rune) bool {
+	return (r >= 'a' && r <= 'z') || (r >= 'A' && r <= 'Z') || (r >= '0' && r <= '9') || r == '_'
+}
+
+// expandBuiltinCall expands a nested builtin call like $(sha256 abc)
+func (cli *CLI) expandBuiltinCall(call string) string {
+	// Remove $( and )
+	if !strings.HasPrefix(call, "$(") || !strings.HasSuffix(call, ")") {
+		return call
+	}
+
+	innerCall := call[2 : len(call)-1]
+	parts := strings.Fields(innerCall)
+	if len(parts) == 0 {
+		return ""
+	}
+
+	funcName := parts[0]
+	var funcArgs []string
+	if len(parts) > 1 {
+		funcArgs = parts[1:]
+	}
+
+	result, err := cli.builtins.Execute(funcName, funcArgs...)
+	if err != nil {
+		return ""
+	}
+	return result
+}
+
+// expandVariable expands a variable reference
+func (cli *CLI) expandVariable(varName string) string {
+	if val, exists := cli.envMgr.Get(varName); exists {
+		return val
+	}
+	if val, exists := os.LookupEnv(varName); exists {
+		return val
+	}
+	return "$" + varName
 }

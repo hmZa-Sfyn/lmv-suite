@@ -24,9 +24,11 @@ import (
 
 // BuiltinFunction represents a builtin function with its handler
 type BuiltinFunction struct {
-	Name        string
-	Description string
-	Callback    func(args ...string) (string, error)
+	Name         string
+	Description  string
+	DetailedDesc string
+	Examples     []string
+	Callback     func(args ...string) (string, error)
 }
 
 // BuiltinRegistry manages all builtin functions
@@ -154,14 +156,24 @@ func (br *BuiltinRegistry) registerAll() {
 	br.register("readfile", "Read file content", br.cmdReadfile)
 	br.register("writefile", "Write file", br.cmdWritefile)
 	br.register("list", "List all builtins", br.cmdList)
+
+	// Initialize detailed descriptions and examples
+	br.initDetailedBuiltins()
 }
 
 // register registers a single builtin function
 func (br *BuiltinRegistry) register(name, desc string, callback func(args ...string) (string, error)) {
+	br.registerDetailed(name, desc, "", []string{}, callback)
+}
+
+// registerDetailed registers a builtin with detailed description and examples
+func (br *BuiltinRegistry) registerDetailed(name, desc, detailed string, examples []string, callback func(args ...string) (string, error)) {
 	br.functions[name] = &BuiltinFunction{
-		Name:        name,
-		Description: desc,
-		Callback:    callback,
+		Name:         name,
+		Description:  desc,
+		DetailedDesc: detailed,
+		Examples:     examples,
+		Callback:     callback,
 	}
 }
 
