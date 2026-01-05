@@ -511,233 +511,383 @@ func HighlightPurple(text string, keyword string) string {
 	return result.String()
 }
 
-// PrintBuiltins prints all available builtin functions with detailed info
+// HighlightPurple highlights all occurrences of keyword in text with purple background.
+// If you don't have this function, use this simple version:
+
 func (cli *CLI) PrintBuiltins(keyword string) {
 	fmt.Println()
-	fmt.Println(core.NmapBox("BUILTIN FUNCTIONS (60+) - DETAILED REFERENCE"))
+	fmt.Println(core.NmapBox("BUILTIN FUNCTIONS (150+) - DETAILED REFERENCE"))
 	fmt.Println()
 
 	builtins := cli.builtins.GetAll()
 
-	// Categories map
+	// Categories without spaces in names
 	categories := map[string][]*BuiltinFunction{
-		"File System":        {},
-		"Hashing":            {},
-		"Encoding":           {},
-		"Strings":            {},
-		"Network Validation": {},
-		"Network":            {},
-		"Math":               {},
-		"System":             {},
-		"Utilities":          {},
+		"FileSystem":        {},
+		"FileOperations":    {},
+		"System":            {},
+		"Hashing":           {},
+		"AdvancedHashing":   {},
+		"Encoding":          {},
+		"AdvancedEncoding":  {},
+		"Strings":           {},
+		"StringProcessing":  {},
+		"Converters":        {},
+		"NetworkValidation": {},
+		"Network":           {},
+		"NetworkExtended":   {},
+		"Validation":        {},
+		"Math":              {},
+		"MathExtended":      {},
+		"Cryptography":      {},
+		"DateTime":          {},
+		"JSONData":          {},
+		"Utilities":         {},
 	}
 
-	// Categorize (same as before)
+	// Categorize all builtins
 	for _, fn := range builtins {
 		switch fn.Name {
-		case "pwd", "cd", "ls", "mkdir", "rm", "cp", "mv", "cat", "exists", "filesize":
-			categories["File System"] = append(categories["File System"], fn)
+		// FileSystem core + extended
+		case "pwd", "cd", "ls", "mkdir", "rm", "cp", "mv", "cat", "exists", "filesize",
+			"find", "tail", "head", "touch", "chmod", "stat", "isdir", "isfile", "file",
+			"readfile", "writefile":
+			categories["FileSystem"] = append(categories["FileSystem"], fn)
+
+		// System
+		case "whoami", "hostname", "date", "uname", "arch", "ostype", "uptime", "ps",
+			"getenv", "which":
+			categories["System"] = append(categories["System"], fn)
+
+		// Hashing basic
 		case "md5", "sha1", "sha256", "hash", "checksum", "crc32":
 			categories["Hashing"] = append(categories["Hashing"], fn)
+
+		// AdvancedHashing
+		case "sha512", "blake2b", "blake2s", "hmac_sha256", "hmac_sha512",
+			"murmur3", "xxhash", "fnv1", "fnv1a", "djb2":
+			categories["AdvancedHashing"] = append(categories["AdvancedHashing"], fn)
+
+		// Encoding basic
 		case "base64", "hex", "url", "json", "csv", "xml", "ascii", "unicode":
 			categories["Encoding"] = append(categories["Encoding"], fn)
-		case "strlen", "toupper", "tolower", "reverse", "trim", "substr", "replace", "split", "startswith", "endswith", "contains", "repeat":
+
+		// AdvancedEncoding
+		case "base32", "base58", "base85", "punycode", "morse", "binary", "octal",
+			"quoted_printable", "percent_encode", "htmlescape":
+			categories["AdvancedEncoding"] = append(categories["AdvancedEncoding"], fn)
+
+		// Strings core
+		case "strlen", "toupper", "tolower", "reverse", "trim", "substr", "replace",
+			"split", "startswith", "endswith", "contains", "repeat":
 			categories["Strings"] = append(categories["Strings"], fn)
-		case "isipv4", "isipv6", "isemail", "isurl", "ismac", "isdomain", "ispath", "isport", "iscdr", "getcidr", "getiprange", "ip2int", "int2ip", "reverseip", "parseurl":
-			categories["Network Validation"] = append(categories["Network Validation"], fn)
-		case "ping", "nslookup", "ipaddr", "gethostbyname", "getipversion", "iplookup", "getport", "getmac", "gateway", "getdns":
+
+		// StringProcessing
+		case "camelcase", "snakecase", "kebabcase", "capitalize", "lowercase", "uppercase",
+			"swapcase", "ltrim", "rtrim", "center", "ljust", "rjust", "indent",
+			"dedent", "wordcount":
+			categories["StringProcessing"] = append(categories["StringProcessing"], fn)
+
+		// Converters
+		case "btoa", "atob", "bin2hex", "hex2bin", "bin2dec", "dec2bin", "hex2dec",
+			"dec2hex", "oct2dec", "dec2oct", "rot13", "rot47", "caesar", "reverse_bytes",
+			"toascii":
+			categories["Converters"] = append(categories["Converters"], fn)
+
+		// NetworkValidation
+		case "isipv4", "isipv6", "isemail", "isurl", "ismac", "isdomain", "ispath",
+			"isport", "iscdr", "getcidr", "getiprange", "ip2int", "int2ip", "reverseip",
+			"parseurl", "isvalidip":
+			categories["NetworkValidation"] = append(categories["NetworkValidation"], fn)
+
+		// Network core
+		case "ping", "nslookup", "ipaddr", "gethostbyname", "getipversion", "iplookup",
+			"getport", "getmac", "gateway", "getdns":
 			categories["Network"] = append(categories["Network"], fn)
-		case "calc", "abs", "min", "max", "sum", "avg", "random":
+
+		// NetworkExtended
+		case "cidrmatch", "hostmask", "broadcast", "ipversion", "isprivate",
+			"isloopback", "ismulticast", "getmactable":
+			categories["NetworkExtended"] = append(categories["NetworkExtended"], fn)
+
+		// Validation (data types)
+		case "isint", "isfloat", "isalpha", "isalnum", "isnumeric", "isspace",
+			"isbinary", "ishex", "isuuid", "isbase64", "ismd5", "issha1", "issha256",
+			"isjson":
+			categories["Validation"] = append(categories["Validation"], fn)
+
+		// Math core
+		case "calc", "abs", "min", "max", "sum", "avg", "random", "randomstr",
+			"randint", "rand":
 			categories["Math"] = append(categories["Math"], fn)
-		case "whoami", "hostname", "date", "uname", "arch", "ostype", "uptime", "ps", "getenv", "which":
-			categories["System"] = append(categories["System"], fn)
+
+		// MathExtended
+		case "pow", "sqrt", "cbrt", "log", "exp", "factorial":
+			categories["MathExtended"] = append(categories["MathExtended"], fn)
+
+		// Cryptography
+		case "uuid", "timestamp", "genpass", "seed":
+			categories["Cryptography"] = append(categories["Cryptography"], fn)
+
+		// DateTime
+		case "now", "epoch", "iso8601", "strtotime", "timeformat", "strftime",
+			"timezone", "dayofweek":
+			categories["DateTime"] = append(categories["DateTime"], fn)
+
+		// JSONData
+		case "jsonpretty", "jsonminify", "jsonformat":
+			categories["JSONData"] = append(categories["JSONData"], fn)
+
+		// Utilities
+		case "sleep", "echo", "list":
+			categories["Utilities"] = append(categories["Utilities"], fn)
+
 		default:
 			categories["Utilities"] = append(categories["Utilities"], fn)
 		}
 	}
 
-	//match the builtins by their name and show them in purple background like metasploit does!
+	normalizedKeyword := strings.ToLower(strings.TrimSpace(keyword))
+	isCategorySearch := false
+	targetCategory := ""
 
-	// Display by category with detailed info
-	//fns := categories[category]
-	//fmt.Println(category)
-	if true {
-
-		normalizedKeyword := strings.ToLower(strings.TrimSpace(keyword))
-		isCategorySearch := false
-		targetCategory := ""
-
-		if strings.HasPrefix(keyword, "#") {
-			targetCategory = strings.TrimSpace(strings.TrimPrefix(keyword, "#"))
-			if _, ok := categories[targetCategory]; ok {
-				isCategorySearch = true
-			}
-		}
-
-		type FunctionWithCategory struct {
-			Func     *BuiltinFunction
-			Category string
-		}
-
-		var results []FunctionWithCategory
-
-		if isCategorySearch {
-			for _, fn := range categories[targetCategory] {
-				results = append(results, FunctionWithCategory{Func: fn, Category: targetCategory})
-			}
-		} else if normalizedKeyword == "" {
-			// Full categorized view (original style)
-			order := []string{"File System", "System", "Hashing", "Encoding", "Strings", "Network Validation", "Network", "Math", "Utilities"}
-			for _, cat := range order {
-				fns := categories[cat]
-				if len(fns) == 0 {
-					continue
-				}
-				fmt.Printf("   %s\n", color.CyanString(fmt.Sprintf("═ %s (%d) ═", cat, len(fns))))
-				sort.Slice(fns, func(i, j int) bool { return fns[i].Name < fns[j].Name })
-
-				for i, fn := range fns {
-					isLast := i == len(fns)-1
-					prefix := "   ├─ "
-					if isLast {
-						prefix = "   └─ "
-					}
-
-					catTag := color.CyanString(fmt.Sprintf("[%s]", cat))
-					name := color.GreenString(fmt.Sprintf("%-15s", fn.Name))
-
-					fmt.Printf("%s%s %s %s\n", prefix, catTag, name, fn.Description)
-					detailPrefix := ""
-					if fn.DetailedDesc != "" {
-						detailPrefix = "   │  "
-						if isLast {
-							detailPrefix = "      "
-						}
-						// Add extra space after examples
-						//fmt.Println()
-					}
-
-					if isLast {
-						fmt.Println()
-						fmt.Printf("%s%s\n", detailPrefix, color.WhiteString(fn.DetailedDesc))
-
-						if len(fn.Examples) > 0 {
-							fmt.Printf("%s%s\n", detailPrefix, color.YellowString("Examples:"))
-							for j, ex := range fn.Examples {
-								exPrefix := "   │     ├─ "
-								if j == len(fn.Examples)-1 {
-									exPrefix = "   │     └─ "
-									if isLast {
-										exPrefix = "        └─ "
-									}
-								} else if isLast {
-									exPrefix = "        ├─ "
-								}
-								fmt.Printf("%s%s\n", exPrefix, color.MagentaString(ex))
-							}
-						}
-					}
-					//fmt.Println()
-				}
-			}
-			printQuickReference()
-			return
+	if strings.HasPrefix(keyword, "#") {
+		targetCategory = strings.TrimSpace(strings.TrimPrefix(keyword, "#"))
+		if _, ok := categories[targetCategory]; ok {
+			isCategorySearch = true
 		} else {
-			// Keyword search
-			for cat, fns := range categories {
-				for _, fn := range fns {
-					if strings.Contains(strings.ToLower(fn.Name), normalizedKeyword) ||
-						strings.Contains(strings.ToLower(fn.Description), normalizedKeyword) {
-						results = append(results, FunctionWithCategory{Func: fn, Category: cat})
-					}
-				}
-			}
-		}
-
-		if len(results) == 0 {
-			fmt.Println(color.RedString("   No matching builtins found for: %s", keyword))
+			// --- Invalid category handling ---
+			fmt.Println(color.RedString("Unknown category: %s", targetCategory))
 			fmt.Println()
-			return
-		}
 
-		sort.Slice(results, func(i, j int) bool {
-			return results[i].Func.Name < results[j].Func.Name
-		})
-
-		header := "MATCHING BUILTINS"
-		if isCategorySearch {
-			header = fmt.Sprintf("CATEGORY: %s", targetCategory)
-		}
-		fmt.Printf("   %s\n", color.CyanString(fmt.Sprintf("═ %s (%d) ═", header, len(results))))
-
-		for i, item := range results {
-			fn := item.Func
-			cat := item.Category
-			isLast := i == len(results)-1
-
-			prefix := "   ├─ "
-			if isLast {
-				prefix = "   └─ "
+			// Suggest possible matches (case-insensitive substring)
+			var suggestions []string
+			lcTarget := strings.ToLower(targetCategory)
+			for cat := range categories {
+				lcCat := strings.ToLower(cat)
+				if strings.Contains(lcCat, lcTarget) || strings.Contains(lcTarget, lcCat) {
+					suggestions = append(suggestions, cat)
+				}
 			}
 
-			// Highlighted parts
-			hlName := HighlightPurple(fn.Name, keyword)
-			hlDesc := HighlightPurple(fn.Description, keyword)
-
-			catTag := color.New(color.FgCyan, color.Bold).Sprint(fmt.Sprintf("[%s]", cat))
-
-			// Name is green, but highlighted parts override with purple bg
-			nameFormatted := fmt.Sprintf("%-15s", hlName)   // No extra color here, let highlight handle it
-			nameColored := color.WhiteString(nameFormatted) // Apply green only to the padded string (highlight wins inside)
-
-			fmt.Printf("%s%s %s %s\n", prefix, catTag, nameColored, hlDesc)
-
-			if fn.DetailedDesc != "" {
-				detailPrefix := "   │  "
-				if isLast {
-					detailPrefix = "      "
-				}
-
-				hlDetailed := HighlightPurple(fn.DetailedDesc, keyword)
-				fmt.Printf("%s%s\n", detailPrefix, color.WhiteString(hlDetailed))
-
-				if len(fn.Examples) > 0 {
-					fmt.Printf("%s%s\n", detailPrefix, color.YellowString("Examples:"))
-					for j, ex := range fn.Examples {
-						exPrefix := "   │     ├─ "
-						if j == len(fn.Examples)-1 {
-							exPrefix = "   │     └─ "
-							if isLast {
-								exPrefix = "        └─ "
-							}
-						} else if isLast {
-							exPrefix = "        ├─ "
-						}
-						hlEx := HighlightPurple(ex, keyword)
-						fmt.Printf("%s%s\n", exPrefix, color.WhiteString(hlEx))
-					}
+			if len(suggestions) > 0 {
+				fmt.Println(color.YellowString("Did you mean one of these?"))
+				sort.Strings(suggestions)
+				for _, s := range suggestions {
+					fmt.Printf("  #%-20s\n", s)
 				}
 				fmt.Println()
 			}
+
+			// Show all valid categories
+			fmt.Println(color.CyanString("Valid categories:"))
+			order := []string{
+				"FileSystem", "FileOperations", "System",
+				"Hashing", "AdvancedHashing",
+				"Encoding", "AdvancedEncoding",
+				"Strings", "StringProcessing",
+				"Converters",
+				"NetworkValidation", "Network", "NetworkExtended",
+				"Validation",
+				"Math", "MathExtended",
+				"Cryptography",
+				"DateTime",
+				"JSONData",
+				"Utilities",
+			}
+			for _, cat := range order {
+				count := len(categories[cat])
+				if count > 0 {
+					fmt.Printf("  #%-20s (%d)\n", cat, count)
+				}
+			}
+			fmt.Println()
+			printQuickReference()
+			return
+		}
+	}
+
+	type FunctionWithCategory struct {
+		Func     *BuiltinFunction
+		Category string
+	}
+
+	var results []FunctionWithCategory
+
+	if isCategorySearch {
+		for _, fn := range categories[targetCategory] {
+			results = append(results, FunctionWithCategory{Func: fn, Category: targetCategory})
+		}
+	} else if normalizedKeyword == "" {
+		// Full categorized view
+		order := []string{
+			"FileSystem", "FileOperations", "System",
+			"Hashing", "AdvancedHashing",
+			"Encoding", "AdvancedEncoding",
+			"Strings", "StringProcessing",
+			"Converters",
+			"NetworkValidation", "Network", "NetworkExtended",
+			"Validation",
+			"Math", "MathExtended",
+			"Cryptography",
+			"DateTime",
+			"JSONData",
+			"Utilities",
 		}
 
-		if !isCategorySearch && normalizedKeyword != "" {
-			fmt.Println(color.CyanString("\n   Tip: Use #category (e.g., #Strings) to show full category"))
+		for _, cat := range order {
+			fns := categories[cat]
+			if len(fns) == 0 {
+				continue
+			}
+			fmt.Printf(" %s\n", color.CyanString("═ %s (%d) ═", cat, len(fns)))
+			sort.Slice(fns, func(i, j int) bool { return fns[i].Name < fns[j].Name })
+			for i, fn := range fns {
+				isLast := i == len(fns)-1
+				prefix := " ├─ "
+				if isLast {
+					prefix = " └─ "
+				}
+				catTag := color.CyanString("[%s]", cat)
+				name := color.WhiteString(fmt.Sprintf("%-18s", fn.Name))
+				fmt.Printf("%s%s %s %s\n", prefix, catTag, name, fn.Description)
+
+				if fn.DetailedDesc != "" {
+					detailPrefix := " │ "
+					if isLast {
+						detailPrefix = "   "
+					}
+					fmt.Printf("%s%s\n", detailPrefix, color.WhiteString(fn.DetailedDesc))
+
+					if len(fn.Examples) > 0 {
+						fmt.Printf("%s%s\n", detailPrefix, color.YellowString("Examples:"))
+						for j, ex := range fn.Examples {
+							exPrefix := " │ ├─ "
+							if j == len(fn.Examples)-1 {
+								exPrefix = " │ └─ "
+								if isLast {
+									exPrefix = "   └─ "
+								}
+							} else if isLast {
+								exPrefix = "   ├─ "
+							}
+							fmt.Printf("%s%s\n", exPrefix, color.MagentaString(ex))
+						}
+					}
+				}
+				if isLast {
+					fmt.Println()
+				}
+			}
+		}
+		printQuickReference()
+		return
+	} else {
+		// Keyword search across name, description, detailed desc, examples
+		for cat, fns := range categories {
+			for _, fn := range fns {
+				lowerName := strings.ToLower(fn.Name)
+				lowerDesc := strings.ToLower(fn.Description)
+				lowerDetailed := strings.ToLower(fn.DetailedDesc)
+				lowerExamples := ""
+				for _, ex := range fn.Examples {
+					lowerExamples += strings.ToLower(ex) + " "
+				}
+
+				if strings.Contains(lowerName, normalizedKeyword) ||
+					strings.Contains(lowerDesc, normalizedKeyword) ||
+					strings.Contains(lowerDetailed, normalizedKeyword) ||
+					strings.Contains(lowerExamples, normalizedKeyword) {
+					results = append(results, FunctionWithCategory{Func: fn, Category: cat})
+				}
+			}
+		}
+	}
+
+	if len(results) == 0 {
+		fmt.Println(color.RedString(" No matching builtins found for: %s", keyword))
+		fmt.Println()
+		return
+	}
+
+	// Sort results by name
+	sort.Slice(results, func(i, j int) bool {
+		return results[i].Func.Name < results[j].Func.Name
+	})
+
+	header := "MATCHING BUILTINS"
+	if isCategorySearch {
+		header = fmt.Sprintf("CATEGORY: %s", targetCategory)
+	}
+	fmt.Printf(" %s\n", color.CyanString("═ %s (%d) ═", header, len(results)))
+
+	for i, item := range results {
+		fn := item.Func
+		cat := item.Category
+		isLast := i == len(results)-1
+		prefix := " ├─ "
+		if isLast {
+			prefix = " └─ "
+		}
+
+		hlName := HighlightPurple(fn.Name, normalizedKeyword)
+		hlDesc := HighlightPurple(fn.Description, normalizedKeyword)
+
+		catTag := color.New(color.FgCyan, color.Bold).Sprint(fmt.Sprintf("[%s]", cat))
+		nameFormatted := fmt.Sprintf("%-18s", hlName)
+		nameColored := color.WhiteString(nameFormatted)
+
+		fmt.Printf("%s%s %s %s\n", prefix, catTag, nameColored, hlDesc)
+
+		if fn.DetailedDesc != "" {
+			detailPrefix := " │ "
+			if isLast {
+				detailPrefix = "   "
+			}
+			hlDetailed := HighlightPurple(fn.DetailedDesc, normalizedKeyword)
+			fmt.Printf("%s%s\n", detailPrefix, color.WhiteString(hlDetailed))
+
+			if len(fn.Examples) > 0 {
+				fmt.Printf("%s%s\n", detailPrefix, color.YellowString("Examples:"))
+				for j, ex := range fn.Examples {
+					exPrefix := " │ ├─ "
+					if j == len(fn.Examples)-1 {
+						exPrefix = " │ └─ "
+						if isLast {
+							exPrefix = "   └─ "
+						}
+					} else if isLast {
+						exPrefix = "   ├─ "
+					}
+					hlEx := HighlightPurple(ex, normalizedKeyword)
+					fmt.Printf("%s%s\n", exPrefix, color.MagentaString(hlEx))
+				}
+			}
+		}
+		if isLast {
 			fmt.Println()
 		}
-
-		printQuickReference()
 	}
-}
 
+	if !isCategorySearch && normalizedKeyword != "" {
+		fmt.Println(color.CyanString("\n Tip: Use #CategoryName (e.g., #Strings or #NetworkValidation) to show full category"))
+		fmt.Println()
+	}
+
+	printQuickReference()
+}
 func printQuickReference() {
 	fmt.Println("\n   " + color.CyanString("═ Quick Reference ═"))
-	fmt.Println("   ├─ categories are: File System, System, Hashing, Encoding, Strings, Network Validation, Network, Math, Utilities")
-	fmt.Println("   ├─ Call syntax:   " + color.YellowString("funcname(arg1, arg2, ...)"))
-	fmt.Println("   ├─ In module arg: " + color.YellowString("run module target=$(hostname)"))
-	fmt.Println("   ├─ Nested calls:  " + color.YellowString("echo($(sha256 password))"))
-	fmt.Println("   ├─ Variables:     " + color.YellowString("run module ip=$myip port=8080"))
-	fmt.Println("   └─ Quoted args:   " + color.YellowString("echo(\"hello world\")"))
+	fmt.Println("   ├─ List all:                " + color.YellowString("list") + "  or just press Tab twice")
+	fmt.Println("   ├─ Show full category:     " + color.YellowString("#CategoryName") + "  (e.g., #FileSystem, #NetworkValidation)")
+	fmt.Println("   ├─ Search functions:       " + color.YellowString("keyword") + "  (case-insensitive, matches name/description/examples)")
+	fmt.Println("   ├─ Call syntax:            " + color.YellowString("funcname(arg1, arg2, ...)"))
+	fmt.Println("   ├─ Nested calls:           " + color.YellowString("echo($(sha256($(randomstr 16))))"))
+	fmt.Println("   ├─ In module args:         " + color.YellowString("run module target=$(hostname) port=$(random 1024-65535)"))
+	fmt.Println("   ├─ Variables:              " + color.YellowString("set myip $(ipaddr) ; echo $myip"))
+	fmt.Println("   ├─ Quoted arguments:       " + color.YellowString("echo(\"hello world with spaces\")"))
+	fmt.Println("   ├─ Multi-line input:       Use \\ at end of line to continue")
+	fmt.Println("   └─ Pipe output (future):   Coming soon")
 	fmt.Println()
 }
 
