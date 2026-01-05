@@ -74,6 +74,43 @@ func (cli *CLI) Start() error {
 	return nil
 }
 
+// Idle start
+func (cli *CLI) IdleStart(banner__ bool, command__ string) error {
+	if err := cli.manager.DiscoverModules(); err != nil {
+		return err
+	}
+
+	if banner__ {
+		cli.PrintBanner()
+	}
+	cli.setupSignalHandler()
+
+	// Create readline instance with history support
+	rl, err := cli.getReadlineInstance()
+	if err != nil {
+		return err
+	}
+	defer rl.Close()
+
+	for cli.running {
+		//rl.SetPrompt(cli.GetPrompt())
+
+		input := command__
+
+		input = strings.TrimSpace(input)
+		if input == "" {
+			continue
+		}
+
+		cli.history = append(cli.history, input)
+		cli.ExecuteCommand(input)
+
+		break
+	}
+
+	return nil
+}
+
 // ExecuteCommand processes user commands
 func (cli *CLI) ExecuteCommand(input string) {
 	// Handle for loops: for VAR in START..END -> COMMAND
