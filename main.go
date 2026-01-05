@@ -18,7 +18,7 @@ func main() {
 	flag.Parse()
 
 	if version {
-		fmt.Println("LanManVan v2.0.0 - Advanced Metasploit-like Framework in Go")
+		fmt.Println("LanManVan %s - Advanced Modular Framework in Go", version)
 		os.Exit(0)
 	}
 
