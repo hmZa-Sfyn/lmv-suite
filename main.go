@@ -15,14 +15,30 @@ func main() {
 	var exec string
 	var console bool
 
+<<<<<<< HEAD
 	flag.StringVar(&modulesDir, "modules", "./modules", "Path to modules directory")
 	flag.BoolVar(&version, "version", false, "Show version")
 	flag.StringVar(&exec, "exec", "", "Execute a command without starting the interactive shell")
 	flag.BoolVar(&console, "console", false, "Start the interactive console")
+=======
+	var exec bool
+	var exec_cmd string
+
+	var show_banner bool
+
+	flag.StringVar(&modulesDir, "modules", "./modules", "Path to modules directory (string)")
+	flag.BoolVar(&version, "version", false, "Show version (bool)")
+
+	flag.BoolVar(&exec, "idle-exec", false, "Execute command and exit? (bool)")
+	flag.StringVar(&exec_cmd, "idle-cmd", "help", "Execute command and exit (string)")
+
+	flag.BoolVar(&show_banner, "banner", false, "Want to show the *lanmanvan* official banner? (bool)")
+
+>>>>>>> eso-2
 	flag.Parse()
 
 	if version {
-		fmt.Println("LanManVan v2.0.0 - Advanced Metasploit-like Framework in Go")
+		fmt.Println("LanManVan %s - Advanced Modular Framework in Go", version)
 		os.Exit(0)
 	}
 
@@ -43,28 +59,32 @@ func main() {
 		os.Exit(1)
 	}
 
-	//exec a command and exit
-	if exec != "" {
-		cliInstance := cli.NewCLI(absPath)
-
-		// This executes the command and sets running = false so the loop exits after one command
-		cliInstance.ExecuteCommandAndExit(exec)
-
-		// Always start the CLI — it will either run interactively or exit immediately
-		if err := cliInstance.Start(); err != nil {
+	// Create and start CLI
+	cliInstance := cli.NewCLI(absPath)
+	if !exec {
+		if err := cliInstance.Start(show_banner); err != nil {
 			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 			os.Exit(1)
 		}
-		// Start() returns only after the loop ends cleanly
-		os.Exit(0)
 	}
 
-	if console != false {
-		// Create and start CLI
-		cliInstance := cli.NewCLI(absPath)
-		if err := cliInstance.Start(); err != nil {
-			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
-			os.Exit(1)
+	if exec {
+		if exec_cmd != "" {
+			//execute command and exit!
+
+			//init shell
+			cliInstance := cli.NewCLI(absPath)
+
+			//show banner & execute command
+			if err := cliInstance.IdleStart(show_banner, exec_cmd); err != nil {
+				fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+				os.Exit(1)
+			}
+
+			//optional: save it to file?
+			//exit
+			os.Exit(0)
 		}
+		os.Exit(0)
 	}
 }

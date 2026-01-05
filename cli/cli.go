@@ -32,12 +32,14 @@ func NewCLI(modulesDir string) *CLI {
 }
 
 // Start begins the CLI loop
-func (cli *CLI) Start() error {
+func (cli *CLI) Start(banner__ bool) error {
 	if err := cli.manager.DiscoverModules(); err != nil {
 		return err
 	}
 
-	cli.PrintBanner()
+	if banner__ { // why is this showing when i told it not to? this one too!
+		cli.PrintBanner()
+	}
 	cli.setupSignalHandler()
 
 	// Create readline instance with history support
@@ -74,21 +76,41 @@ func (cli *CLI) Start() error {
 	return nil
 }
 
-// ExecuteCommandAndExit executes a single command (e.g., from -c flag or automation)
-// and then cleanly terminates the CLI loop.
-func (cli *CLI) ExecuteCommandAndExit(input string) {
-	input = strings.TrimSpace(input)
-	if input == "" {
-		cli.running = false
-		return
+// Idle start
+func (cli *CLI) IdleStart(banner__ bool, command__ string) error {
+	if err := cli.manager.DiscoverModules(); err != nil {
+		return err
 	}
 
-	// Mirror interactive loop behavior for consistency
-	cli.history = append(cli.history, input)
-	cli.ExecuteCommand(input)
+	if banner__ { // why is this showing when i told it not to?
+		cli.PrintBanner()
+	}
+	cli.setupSignalHandler()
 
-	// Signal the main loop to exit
-	cli.running = false
+	// Create readline instance with history support
+	rl, err := cli.getReadlineInstance()
+	if err != nil {
+		return err
+	}
+	defer rl.Close()
+
+	for cli.running {
+		//rl.SetPrompt(cli.GetPrompt())
+
+		input := command__
+
+		input = strings.TrimSpace(input)
+		if input == "" {
+			continue
+		}
+
+		cli.history = append(cli.history, input)
+		cli.ExecuteCommand(input)
+
+		break
+	}
+
+	return nil
 }
 
 // ExecuteCommand processes user commands
