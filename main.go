@@ -17,7 +17,6 @@ func main() {
 	var exec_cmd string
 
 	var show_banner bool
-	var show_prompt bool
 
 	flag.StringVar(&modulesDir, "modules", "./modules", "Path to modules directory (string)")
 	flag.BoolVar(&version, "version", false, "Show version (bool)")
@@ -25,8 +24,7 @@ func main() {
 	flag.BoolVar(&exec, "idle-exec", false, "Execute command and exit? (bool)")
 	flag.StringVar(&exec_cmd, "idle-cmd", "help", "Execute command and exit (string)")
 
-	flag.BoolVar(&show_banner, "idle-banner", false, "Want to show the *lanmanvan* official banner?")
-	flag.BoolVar(&show_prompt, "idle-prompt", false, "Want to show the prompt? (when in idle mode)")
+	flag.BoolVar(&show_banner, "banner", false, "Want to show the *lanmanvan* official banner? (bool)")
 
 	flag.Parse()
 
@@ -55,7 +53,7 @@ func main() {
 	// Create and start CLI
 	cliInstance := cli.NewCLI(absPath)
 	if !exec {
-		if err := cliInstance.Start(); err != nil {
+		if err := cliInstance.Start(show_banner); err != nil {
 			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 			os.Exit(1)
 		}

@@ -32,12 +32,14 @@ func NewCLI(modulesDir string) *CLI {
 }
 
 // Start begins the CLI loop
-func (cli *CLI) Start() error {
+func (cli *CLI) Start(banner__ bool) error {
 	if err := cli.manager.DiscoverModules(); err != nil {
 		return err
 	}
 
-	cli.PrintBanner()
+	if banner__ { // why is this showing when i told it not to? this one too!
+		cli.PrintBanner()
+	}
 	cli.setupSignalHandler()
 
 	// Create readline instance with history support
@@ -80,7 +82,7 @@ func (cli *CLI) IdleStart(banner__ bool, command__ string) error {
 		return err
 	}
 
-	if banner__ {
+	if banner__ { // why is this showing when i told it not to?
 		cli.PrintBanner()
 	}
 	cli.setupSignalHandler()
