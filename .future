@@ -1,0 +1,5 @@
+# future updates!
+
+- add support for: uppercase( something + abc() + whatever  ), the + or . like perl!
+- add support for: something |> anathor() |> fmt("this is something: $ \n and this is anathor: $") |> echo()
+- add support for: echo("abc"+"d"+"efghij"+""+""+""+"klmnopqr"+"st"+""+"uvwxyz")

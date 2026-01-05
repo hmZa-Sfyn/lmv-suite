@@ -254,6 +254,7 @@ for ip in 0..255 -> check_port ip=192.168.1.$ip port=80
 Output: [checks all 256 IPs on port 80]
 
 # Data processing
+# does not work right now, will code in future!
 for hash_type in md5|sha1|sha256 -> echo("password") |> $hash_type()
 Output: [generates multiple hash types]
 ```
@@ -341,6 +342,7 @@ for port in 22,80,443 -> for ip in 0..255 -> check_port ip=192.168.1.$ip port=$p
 ### Security & Hashing
 ```bash
 # Generate multiple hash formats
+# future: will code, someday!
 for alg in md5|sha1|sha256|sha512 -> echo("password") |> $alg() |> file("~/hashes.log")
 
 # Hash file contents with separator

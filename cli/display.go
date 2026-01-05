@@ -34,6 +34,8 @@ func (cli *CLI) PrintHelp() {
 		{"env, envs", "Show all global environment variables, aliases: envs"},
 		{"builtins", "Show all 30+ builtin functions with examples"},
 		{"builtins <search>", "Show search matched builtin functions"},
+
+		{"builtins <keyword>", "Show all builtin functions matching to keyword with examples"},
 		{"key=value", "Set global environment variable (persistent), example: timeout=10"},
 		{"key=?", "View global environment variable value, example: timeout=?"},
 		{"create <name> [type]", "Create a new module (python/bash), example: create mymodule python"},
@@ -477,14 +479,15 @@ func (cli *CLI) PrintHistory() {
 }
 
 // PrintBuiltins prints all available builtin functions with detailed info
-func (cli *CLI) PrintBuiltins(search__ string) {
+
+func (cli *CLI) PrintBuiltins(keyword string) {
 	fmt.Println()
 	fmt.Println(core.NmapBox("BUILTIN FUNCTIONS (60+) - DETAILED REFERENCE"))
 	fmt.Println()
 
 	builtins := cli.builtins.GetAll()
 
-	// Group builtins by category
+	// Categories map
 	categories := map[string][]*BuiltinFunction{
 		"File System":        {},
 		"Hashing":            {},
@@ -497,7 +500,7 @@ func (cli *CLI) PrintBuiltins(search__ string) {
 		"Utilities":          {},
 	}
 
-	// Categorize builtins
+	// Categorize (same as before)
 	for _, fn := range builtins {
 		switch fn.Name {
 		case "pwd", "cd", "ls", "mkdir", "rm", "cp", "mv", "cat", "exists", "filesize":
@@ -528,63 +531,175 @@ func (cli *CLI) PrintBuiltins(search__ string) {
 		fns := categories[category]
 		if len(fns) == 0 {
 			continue
-		}
+			normalizedKeyword := strings.ToLower(strings.TrimSpace(keyword))
+			isCategorySearch := false
+			targetCategory := ""
 
-		fmt.Printf("   %s\n", color.CyanString(fmt.Sprintf("═ %s (%d) ═", category, len(fns))))
-
-		// Sort functions by name
-		sort.Slice(fns, func(i, j int) bool {
-			return fns[i].Name < fns[j].Name
-		})
-
-		for i, fn := range fns {
-			isLast := i == len(fns)-1
-			prefix := "   ├─ "
-			if isLast {
-				prefix = "   └─ "
+			if strings.HasPrefix(keyword, "#") {
+				targetCategory = strings.TrimSpace(strings.TrimPrefix(keyword, "#"))
+				if _, ok := categories[targetCategory]; ok {
+					isCategorySearch = true
+				}
 			}
 
-			// Print function name and short description
-			fmt.Printf("%s%s %s\n",
-				prefix,
-				color.GreenString(fmt.Sprintf("%-15s", fn.Name)),
-				fn.Description,
-			)
+			type FunctionWithCategory struct {
+				Func     *BuiltinFunction
+				Category string
+			}
 
-			// Print detailed description if available
-			if fn.DetailedDesc != "" {
-				detailPrefix := "   │  "
-				if isLast {
-					detailPrefix = "      "
+			var results []FunctionWithCategory
+
+			if isCategorySearch {
+				for _, fn := range categories[targetCategory] {
+					results = append(results, FunctionWithCategory{Func: fn, Category: targetCategory})
 				}
-				fmt.Printf("%s%s\n", detailPrefix, color.WhiteString(fn.DetailedDesc))
-
-				// Print examples if available
-				if len(fn.Examples) > 0 {
-					fmt.Printf("%s%s\n", detailPrefix, color.YellowString("Examples:"))
-					for j, example := range fn.Examples {
-						examplePrefix := "   │     ├─ "
-						if isLast && j == len(fn.Examples)-1 {
-							examplePrefix = "        └─ "
-						} else if isLast {
-							examplePrefix = "        ├─ "
-						} else if j == len(fn.Examples)-1 {
-							examplePrefix = "   │     └─ "
-						}
-						fmt.Printf("%s%s\n", examplePrefix, color.MagentaString(example))
+			} else if normalizedKeyword == "" {
+				// Full categorized view (original style)
+				order := []string{"File System", "System", "Hashing", "Encoding", "Strings", "Network Validation", "Network", "Math", "Utilities"}
+				for _, cat := range order {
+					fns := categories[cat]
+					if len(fns) == 0 {
+						continue
 					}
-					// Add extra space after examples
-					//fmt.Println()
+					fmt.Printf("   %s\n", color.CyanString(fmt.Sprintf("═ %s (%d) ═", cat, len(fns))))
+					sort.Slice(fns, func(i, j int) bool { return fns[i].Name < fns[j].Name })
+
+					for i, fn := range fns {
+						isLast := i == len(fns)-1
+						prefix := "   ├─ "
+						if isLast {
+							prefix = "   └─ "
+						}
+
+						catTag := color.CyanString(fmt.Sprintf("[%s]", cat))
+						name := color.GreenString(fmt.Sprintf("%-15s", fn.Name))
+
+						fmt.Printf("%s%s %s %s\n", prefix, catTag, name, fn.Description)
+
+						if fn.DetailedDesc != "" {
+							detailPrefix := "   │  "
+							if isLast {
+								detailPrefix = "      "
+							}
+							// Add extra space after examples
+							//fmt.Println()
+						}
+
+						if isLast {
+							fmt.Println()
+							fmt.Printf("%s%s\n", detailPrefix, color.WhiteString(fn.DetailedDesc))
+
+							if len(fn.Examples) > 0 {
+								fmt.Printf("%s%s\n", detailPrefix, color.YellowString("Examples:"))
+								for j, ex := range fn.Examples {
+									exPrefix := "   │     ├─ "
+									if j == len(fn.Examples)-1 {
+										exPrefix = "   │     └─ "
+										if isLast {
+											exPrefix = "        └─ "
+										}
+									} else if isLast {
+										exPrefix = "        ├─ "
+									}
+									fmt.Printf("%s%s\n", exPrefix, color.MagentaString(ex))
+								}
+							}
+						}
+						//fmt.Println()
+					}
+				}
+				printQuickReference()
+				return
+			} else {
+				// Keyword search
+				for cat, fns := range categories {
+					for _, fn := range fns {
+						if strings.Contains(strings.ToLower(fn.Name), normalizedKeyword) ||
+							strings.Contains(strings.ToLower(fn.Description), normalizedKeyword) {
+							results = append(results, FunctionWithCategory{Func: fn, Category: cat})
+						}
+					}
+				}
+			}
+
+			if len(results) == 0 {
+				fmt.Println(color.RedString("   No matching builtins found for: %s", keyword))
+				fmt.Println()
+				return
+			}
+
+			sort.Slice(results, func(i, j int) bool {
+				return results[i].Func.Name < results[j].Func.Name
+			})
+
+			header := "MATCHING BUILTINS"
+			if isCategorySearch {
+				header = fmt.Sprintf("CATEGORY: %s", targetCategory)
+			}
+			fmt.Printf("   %s\n", color.CyanString(fmt.Sprintf("═ %s (%d) ═", header, len(results))))
+
+			for i, item := range results {
+				fn := item.Func
+				cat := item.Category
+				isLast := i == len(results)-1
+
+				prefix := "   ├─ "
+				if isLast {
+					prefix = "   └─ "
 				}
 
-				if isLast {
+				// Highlighted parts
+				hlName := HighlightPurple(fn.Name, keyword)
+				hlDesc := HighlightPurple(fn.Description, keyword)
+
+				catTag := color.New(color.FgCyan, color.Bold).Sprint(fmt.Sprintf("[%s]", cat))
+
+				// Name is green, but highlighted parts override with purple bg
+				nameFormatted := fmt.Sprintf("%-15s", hlName)   // No extra color here, let highlight handle it
+				nameColored := color.WhiteString(nameFormatted) // Apply green only to the padded string (highlight wins inside)
+
+				fmt.Printf("%s%s %s %s\n", prefix, catTag, nameColored, hlDesc)
+
+				if fn.DetailedDesc != "" {
+					detailPrefix := "   │  "
+					if isLast {
+						detailPrefix = "      "
+					}
+
+					hlDetailed := HighlightPurple(fn.DetailedDesc, keyword)
+					fmt.Printf("%s%s\n", detailPrefix, color.WhiteString(hlDetailed))
+
+					if len(fn.Examples) > 0 {
+						fmt.Printf("%s%s\n", detailPrefix, color.YellowString("Examples:"))
+						for j, ex := range fn.Examples {
+							exPrefix := "   │     ├─ "
+							if j == len(fn.Examples)-1 {
+								exPrefix = "   │     └─ "
+								if isLast {
+									exPrefix = "        └─ "
+								}
+							} else if isLast {
+								exPrefix = "        ├─ "
+							}
+							hlEx := HighlightPurple(ex, keyword)
+							fmt.Printf("%s%s\n", exPrefix, color.WhiteString(hlEx))
+						}
+					}
 					fmt.Println()
 				}
 			}
-		}
-		fmt.Println()
-	}
 
+			if !isCategorySearch && normalizedKeyword != "" {
+				fmt.Println(color.CyanString("\n   Tip: Use #category (e.g., #Strings) to show full category"))
+				fmt.Println()
+			}
+
+			printQuickReference()
+		}
+	}
+}
+
+func printQuickReference() {
 	fmt.Println("\n   " + color.CyanString("═ Quick Reference ═"))
 	fmt.Println("   ├─ Call syntax:   " + color.YellowString("funcname(arg1, arg2, ...)"))
 	fmt.Println("   ├─ In module arg: " + color.YellowString("run module target=$(hostname)"))

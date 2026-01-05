@@ -241,6 +241,8 @@ func (cli *CLI) ExecuteCommand(input string) {
 		cli.PrintHistory()
 	case "clear", "cls":
 		cli.ClearScreen()
+	case "refresh", "reload":
+		cli.RefreshModules()
 	case "exit", "quit", "q":
 		cli.running = false
 		fmt.Println()
@@ -281,6 +283,42 @@ func (cli *CLI) GetHistory() []string {
 // Stop stops the CLI loop
 func (cli *CLI) Stop() {
 	cli.running = false
+}
+
+// RefreshModules refreshes and reloads all modules from the modules directory
+func (cli *CLI) RefreshModules() {
+	fmt.Println()
+	core.PrintInfo("Refreshing modules...")
+	fmt.Println()
+
+	// Clear and reinitialize the module manager with the same directory
+	modulesDirPath := cli.manager.ModulesDir
+	cli.manager = core.NewModuleManager(modulesDirPath)
+
+	// Discover modules again
+	if err := cli.manager.DiscoverModules(); err != nil {
+		core.PrintError(fmt.Sprintf("Failed to refresh modules: %v", err))
+		fmt.Println()
+		return
+	}
+
+	// Count loaded modules
+	modules := cli.manager.ListModules()
+	moduleCount := len(modules)
+
+	fmt.Println()
+	core.PrintSuccess(fmt.Sprintf("✓ Modules refreshed successfully! Loaded %d module(s)", moduleCount))
+	fmt.Println()
+
+	// Display summary of loaded modules
+	if moduleCount > 0 {
+		fmt.Println(core.NmapBox("Loaded Modules"))
+		for i, module := range modules {
+			status := "✓"
+			fmt.Printf("   [%d] %s %s\n", i+1, status, core.Color("cyan", module.Name))
+		}
+		fmt.Println()
+	}
 }
 
 // executeForLoop handles for loop syntax: for VAR in START..END -> COMMAND
