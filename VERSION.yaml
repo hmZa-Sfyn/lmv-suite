@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-version: 1.2.0
-=======
-version: 1.2026.3
->>>>>>> eso-2
+version: 1.5.0
 build: main
-build_date: "Jan 5 2026"
+build_date: "Jan 10 2026"
 build_author: "hmza"

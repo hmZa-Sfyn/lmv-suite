@@ -12,6 +12,8 @@ import (
 func main() {
 	var modulesDir string
 	var version bool
+	var versionText string
+	versionText = "1.5"
 
 	var exec bool
 	var exec_cmd string
@@ -29,7 +31,7 @@ func main() {
 	flag.Parse()
 
 	if version {
-		fmt.Println("LanManVan %s - Advanced Modular Framework in Go", version)
+		fmt.Println("LanManVan %s - Advanced Modular Framework in Go", versionText)
 		os.Exit(0)
 	}
 
