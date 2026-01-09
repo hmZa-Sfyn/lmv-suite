@@ -38,20 +38,48 @@ _  / _  / / / / /_ |/ /
 /_/  /_/ /_/ /_/_____/  
                         
 `,
+
+		`
+dP                     
+88                     
+88 88d8b.d8b. dP   .dP 
+88 88''88''88 88   d8' 
+88 88  88  88 88 .88'  
+dP dP  dP  dP 8888P'
+`,
+
+		`
+888                        
+888                        
+888                        
+888 88888b.d88b.  888  888 
+888 888 "888 "88b 888  888 
+888 888  888  888 Y88  88P 
+888 888  888  888  Y8bd8P  
+888 888  888  888   Y88P
+		`,
+
+		`
+$$\                         
+$$ |                        
+$$ |$$$$$$\$$$$\ $$\    $$\ 
+$$ |$$  _$$  _$$\\$$\  $$  |
+$$ |$$ / $$ / $$ |\$$\$$  / 
+$$ |$$ | $$ | $$ | \$$$  /  
+$$ |$$ | $$ | $$ |  \$  /   
+\__|\__| \__| \__|   \_/
+		`,
 	}
 
-	// Pick random banner
-	banner := banners[0]
+	banner := banners[rand.Intn(len(banners))]
 
 	fmt.Println()
 	color.New(color.FgCyan, color.Bold).Println(banner)
 	fmt.Println()
 
 	// Common footer for all banners
-	color.New(color.FgGreen, color.Bold).Println("╔═════════════════════════════════════════════════════════════════╗")
-	color.New(color.FgGreen, color.Bold).Println("║   ✦ LANMANVAN v2.0 - Advanced Modular Tooling Framework ✦       ║")
+	color.New(color.FgGreen, color.Bold).Println("║   @ LANMANVAN v2.0 - Advanced Modular Tooling Framework @       ║")
 	color.New(color.FgGreen, color.Bold).Println("║   Go Core | Python3/Bash Modules | Dynamic UI | Security Tools  ║")
-	color.New(color.FgGreen, color.Bold).Println("╚═════════════════════════════════════════════════════════════════╝")
 	fmt.Println()
 
 	fmt.Printf("Type %s for available commands, have fun!\n\n", color.CyanString("'help'"))
