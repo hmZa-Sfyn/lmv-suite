@@ -385,12 +385,6 @@ func (cli *CLI) ExecuteCommand(input string) {
 		return
 	}
 
-	// pipes
-	if strings.Contains(input, "|>") {
-		cli.executePipedCommands(input)
-		return
-	}
-
 	// env var set / view
 	if strings.Contains(input, "=") && !strings.Contains(input, " ") {
 		parts := strings.SplitN(input, "=", 2)
