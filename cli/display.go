@@ -43,25 +43,6 @@ func (cli *CLI) PrintHelp() {
 		{"clear, cls", "Clear the terminal screen (alias: cls)"},
 		{"refresh, reload", "Reload/refresh all modules from disk"},
 		{"exit, quit, q", "Exit the framework (aliases: quit, q)"},
-
-		// ──────────────────────────────
-		// Macros & Shortcuts
-		// ──────────────────────────────
-		{"#def name |param1:must,param2,...| -> command",
-			"Define custom macro (supports required params with :must)"},
-		{"#define ...", "Same as #def (alternative syntax)"},
-		{"#echo text", "Print text (built-in)"},
-		{"#if condition -> command", "Simple conditional execution (condition: true/1/yes)"},
-		{"#pwd", "Show current working directory (built-in)"},
-		{"#whoami", "Show current username (built-in)"},
-		{"#date", "Show current date/time (built-in)"},
-		{"#clear, #cls", "Clear screen (built-in)"},
-		{"#value $VAR", "Show value of environment variable (built-in)"},
-
-		// Examples of macro usage
-		{"#mycommand value", "Run user-defined macro with positional arg"},
-		{"#mycommand param=\"value\"", "Run with named parameter"},
-		{"#mycommand(param=\"value\")", "Run with parentheses style"},
 	}
 
 	for _, cmd := range commands {

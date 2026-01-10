@@ -5,11 +5,9 @@ import (
 	"fmt"
 	"net"
 	"os"
-	"os/user"
 	"regexp"
 	"strconv"
 	"strings"
-	"time"
 
 	"lanmanvan/core"
 )
@@ -148,241 +146,96 @@ func (cli *CLI) IdleStart(banner__ bool, command__ string) error {
 // ExecuteCommand processes user commands
 
 // handleBuiltinMacro returns true if the macro was handled (built-in), false otherwise
-func (cli *CLI) handleBuiltinMacro(macroName string, parts []string, fullInput string) bool {
-	switch macroName {
-	case "echo":
-		if len(parts) > 1 {
-			fmt.Println(strings.Join(parts[1:], " "))
-		} else {
-			fmt.Println()
-		}
-		return true
-
-	case "if":
-		if len(parts) < 4 || parts[2] != "->" {
-			core.PrintError("Usage: #if condition -> command")
-			return true
-		}
-		condition := strings.ToLower(parts[1])
-		if condition == "true" || condition == "1" || condition == "yes" || condition == "on" {
-			cmd := strings.Join(parts[3:], " ")
-			cli.ExecuteCommand(cmd)
-		}
-		return true
-
-	case "else":
-		// Mostly placeholder — useful mainly in multi-line macro definitions
-		core.PrintInfo("#else is only meaningful inside macro bodies or scripts")
-		return true
-
-	case "pwd":
-		dir, _ := os.Getwd()
-		fmt.Println(core.Color("green", dir))
-		return true
-
-	case "whoami":
-		u, _ := user.Current()
-		fmt.Println(core.Color("cyan", u.Username))
-		return true
-
-	case "date":
-		fmt.Println(time.Now().Format("2006-01-02 15:04:05 MST"))
-		return true
-
-	case "clear", "cls":
-		cli.ClearScreen()
-		return true
-
-	case "value":
-		if len(parts) > 1 {
-			val, exists := cli.envMgr.Get(parts[1])
-			if exists {
-				fmt.Println(val)
-			} else {
-				core.PrintWarning(fmt.Sprintf("No value for %s", parts[1]))
-			}
-		} else {
-			core.PrintError("Usage: #value $var")
-		}
-		return true
-
-	// You can easily add more built-ins here in the future
-	// case "cd":
-	// case "sleep":
-	// case "help":
-
-	default:
-		return false // not a built-in → try user-defined
-	}
-}
-
 func (cli *CLI) ExecuteCommand(input string) {
 	input = strings.TrimSpace(input)
 	if input == "" {
 		return
 	}
 
-	// ──────────────────────────────────────────────
-	// MACRO HANDLING
-	// ──────────────────────────────────────────────
-	if strings.HasPrefix(input, "#") {
-		// Normalize multiple spaces
-		normalized := regexp.MustCompile(`\s+`).ReplaceAllString(input, " ")
-		parts := strings.Fields(normalized)
+	// 1. First: structured syntax commands that contain -> (for loops, etc.)
+	if strings.HasPrefix(input, "for ") &&
+		strings.Contains(input, " in ") &&
+		strings.Contains(input, " -> ") {
 
-		// Macro definition (#def or #define)
-		if len(parts) >= 4 && (parts[0] == "#def" || parts[0] == "#define") {
-			macroName := parts[1]
-
-			// Find arrow
-			arrowIdx := -1
-			for i, p := range parts {
-				if p == "->" {
-					arrowIdx = i
-					break
-				}
-			}
-
-			if arrowIdx == -1 || arrowIdx < 3 {
-				core.PrintError("Usage: #def name |param1:must,param2,...| -> command")
-				return
-			}
-
-			// Parameters section
-			paramSection := strings.Join(parts[2:arrowIdx], " ")
-			if !strings.HasPrefix(paramSection, "|") || !strings.HasSuffix(paramSection, "|") {
-				core.PrintError("Parameters must be enclosed in | |")
-				return
-			}
-
-			paramSection = strings.Trim(paramSection, "| ")
-			var params []string
-			required := make(map[string]bool)
-
-			if paramSection != "" {
-				for _, p := range strings.Split(paramSection, ",") {
-					trimmed := strings.TrimSpace(p)
-					if trimmed == "" {
-						continue
-					}
-
-					name := trimmed
-					isRequired := false
-					if strings.HasSuffix(trimmed, ":must") {
-						name = strings.TrimSuffix(trimmed, ":must")
-						name = strings.TrimSpace(name)
-						isRequired = true
-					}
-
-					if name != "" {
-						params = append(params, name)
-						if isRequired {
-							required[name] = true
-						}
-					}
-				}
-			}
-
-			commandTemplate := strings.Join(parts[arrowIdx+1:], " ")
-
-			// Save macro
-			cli.macros[macroName] = commandTemplate
-			cli.macroParams[macroName] = params
-			cli.macroRequired[macroName] = required
-
-			msg := fmt.Sprintf("Macro #%s defined with params [%s]", macroName, strings.Join(params, ", "))
-			if len(required) > 0 {
-				var req []string
-				for k := range required {
-					req = append(req, k)
-				}
-				msg += fmt.Sprintf(" (required: %s)", strings.Join(req, ", "))
-			}
-			core.PrintSuccess(msg)
-			return
-		}
-
-		// Macro call
-		macroName := strings.TrimPrefix(parts[0], "#")
-		if macroName == "" {
-			core.PrintError("Invalid macro name")
-			return
-		}
-
-		// First try built-in macros
-		if cli.handleBuiltinMacro(macroName, parts, input) {
-			return
-		}
-
-		// Then try user-defined macro
-		template, exists := cli.macros[macroName]
-		if !exists {
-			core.PrintError(fmt.Sprintf("Unknown macro: #%s", macroName))
-			return
-		}
-
-		paramsList := cli.macroParams[macroName]
-		requiredMap := cli.macroRequired[macroName]
-
-		// Extract arguments
-		rawArgs := strings.TrimSpace(input[len(parts[0]):])
-		if strings.HasPrefix(rawArgs, "(") && strings.HasSuffix(rawArgs, ")") {
-			rawArgs = strings.Trim(rawArgs, "() ")
-		}
-
-		argParts := strings.Fields(rawArgs)
-		argMap := make(map[string]string)
-		positionalIndex := 0
-
-		for _, arg := range argParts {
-			arg = strings.Trim(arg, "\"'")
-			if strings.Contains(arg, "=") {
-				kv := strings.SplitN(arg, "=", 2)
-				if len(kv) == 2 {
-					key := strings.TrimSpace(kv[0])
-					value := strings.TrimSpace(kv[1])
-					argMap[key] = value
-				}
-			} else if positionalIndex < len(paramsList) {
-				argMap[paramsList[positionalIndex]] = arg
-				positionalIndex++
-			}
-		}
-
-		// Check required parameters
-		var missing []string
-		for param, must := range requiredMap {
-			if must && argMap[param] == "" {
-				missing = append(missing, param)
-			}
-		}
-
-		if len(missing) > 0 {
-			core.PrintError(fmt.Sprintf(
-				"Missing required parameter(s) for #%s: %s",
-				macroName, strings.Join(missing, ", ")))
-			return
-		}
-
-		// Build final command
-		cmd := template
-		for param, value := range argMap {
-			cmd = strings.ReplaceAll(cmd, "$"+param, value)
-		}
-
-		fmt.Printf("→ %s\n", cmd)
-		cli.ExecuteCommand(cmd)
+		cli.executeForLoop(input)
 		return
 	}
 
-	// ──────────────────────────────────────────────
-	// Everything else (for loops, pipes, env vars, modules, shell, etc.)
-	// ──────────────────────────────────────────────
+	// 2. Special prefixes: #proxychains and #sudo → run original command via idle executor with prefix
+	if strings.HasPrefix(input, "#proxychains ") || strings.HasPrefix(input, "#sudo ") {
+		prefix := ""
+		cmdPart := ""
 
-	// for loops
-	if strings.HasPrefix(input, "for ") && strings.Contains(input, " in ") && strings.Contains(input, " -> ") {
-		cli.executeForLoop(input)
+		if strings.HasPrefix(input, "#proxychains ") {
+			prefix = "proxychains "
+			cmdPart = strings.TrimSpace(input[len("#proxychains "):])
+		} else if strings.HasPrefix(input, "#sudo ") {
+			prefix = "sudo "
+			cmdPart = strings.TrimSpace(input[len("#sudo "):])
+		}
+
+		if cmdPart == "" {
+			core.PrintError("Missing command after #" + prefix[:len(prefix)-1])
+			return
+		}
+
+		// The REAL command we want to run in background/idle mode
+		innerCommand := cmdPart
+
+		// Build the wrapper that uses idle-exec
+		wrapper := fmt.Sprintf(
+			`%s~/bin/lanmanvan -modules ~/lanmanvan/modules -idle-exec -idle-cmd %q`,
+			prefix,
+			innerCommand,
+		)
+
+		core.PrintInfo("Executing in background/idle mode with prefix:")
+		fmt.Printf("  → %s\n\n", wrapper)
+
+		// Run the wrapper via shell (this should now work)
+		cli.ExecuteShellCommand(wrapper)
 		return
+	}
+
+	// 3. Output redirection > and >>  (only after special syntaxes!)
+	// We check for space before > or >> to reduce false positives
+	if strings.Contains(input, " > ") || strings.Contains(input, " >> ") ||
+		(strings.HasSuffix(input, ">") && !strings.HasSuffix(input, "->")) ||
+		(strings.HasSuffix(input, ">>")) {
+
+		// Find the LAST occurrence of > or >>
+		greaterPos := strings.LastIndex(input, ">>")
+		if greaterPos == -1 {
+			greaterPos = strings.LastIndex(input, ">")
+		}
+
+		if greaterPos > 0 {
+			cmd := strings.TrimSpace(input[:greaterPos])
+			redirectPart := strings.TrimSpace(input[greaterPos:])
+
+			fields := strings.Fields(redirectPart)
+			if len(fields) < 2 {
+				core.PrintError("Redirection syntax: command > file  or  command >> file")
+				return
+			}
+
+			op := fields[0] // > or >>
+			filename := strings.Join(fields[1:], " ")
+			filename = strings.Trim(filename, "\"'")
+
+			wrapper := fmt.Sprintf(
+				`lmv -idle-exec -idle-cmd %q %s %q`,
+				cmd,
+				op,
+				filename,
+			)
+
+			core.PrintInfo("Redirecting output via idle/background executor...")
+			fmt.Printf("  → %s\n\n", wrapper)
+
+			cli.ExecuteShellCommand(wrapper)
+			return
+		}
 	}
 
 	// env var set / view
@@ -390,31 +243,39 @@ func (cli *CLI) ExecuteCommand(input string) {
 		parts := strings.SplitN(input, "=", 2)
 		if len(parts) == 2 {
 			key := strings.TrimSpace(parts[0])
-			val := strings.TrimSpace(parts[1])
-			if val == "?" {
-				if v, ok := cli.envMgr.Get(key); ok {
-					fmt.Printf("   %s = %s\n", core.Color("cyan", key), core.Color("green", v))
+			value := strings.TrimSpace(parts[1])
+
+			if value == "?" {
+				if val, exists := cli.envMgr.Get(key); exists {
+					fmt.Println()
+					fmt.Printf("   %s = %s\n", core.Color("cyan", key), core.Color("green", val))
+					fmt.Println()
 				} else {
-					core.PrintWarning("Variable '" + key + "' not set")
+					core.PrintWarning(fmt.Sprintf("Variable '%s' not set", key))
+					fmt.Println()
 				}
 				return
 			}
-			if err := cli.envMgr.Set(key, val); err != nil {
-				core.PrintError("Failed to set variable: " + err.Error())
+
+			if err := cli.envMgr.Set(key, value); err != nil {
+				core.PrintError(fmt.Sprintf("Failed to set variable: %v", err))
 				return
 			}
-			core.PrintSuccess(fmt.Sprintf("Set %s = %s", key, val))
+
+			fmt.Println()
+			core.PrintSuccess(fmt.Sprintf("Set %s = %s", key, value))
+			fmt.Println()
 			return
 		}
 	}
 
-	// shell command
+	// 6. Shell command ($ prefix)
 	if strings.HasPrefix(input, "$") {
 		cli.ExecuteShellCommand(input)
 		return
 	}
 
-	// regular commands
+	// 7. Regular commands / modules
 	parts := strings.Fields(input)
 	if len(parts) == 0 {
 		return
@@ -474,13 +335,18 @@ func (cli *CLI) ExecuteCommand(input string) {
 		cli.RefreshModules()
 	case "exit", "quit", "q":
 		cli.running = false
-		core.PrintSuccess("Goodbye!")
+		fmt.Println()
+		core.PrintSuccess("Goodbye! See you next time.")
+		fmt.Println()
 		return
+
 	default:
+		// Quick module info: module!
 		if strings.HasSuffix(cmd, "!") {
 			moduleName := strings.TrimSuffix(cmd, "!")
 			cli.ShowModuleInfo(moduleName, 0)
 		} else {
+			// Try to run as module
 			cli.RunModule(cmd, args)
 		}
 	}
