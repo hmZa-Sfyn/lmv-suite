@@ -23,24 +23,45 @@ func (cli *CLI) PrintHelp() {
 		name string
 		desc string
 	}{
-		{"help, h, ?", "Show this help message, aliases: h, ?"},
-		{"list, ls", "List all modules, aliases: ls"},
-		{"search <keyword>", "Search modules by name/tag, example: search network"},
-		{"info <module>", "Show detailed module information, example: info network"},
-		{"<module>!", "Quick show module options and usage, example: network!"},
-		{"run <module> [args]", "Execute a module with arguments, example: run network ip="},
-		{"<module> [args]", "Shorthand: <module> arg_key=value, example: network ip=192.168.1.1"},
-		{"<module> arg_key = value", "Format with spaces (alternative), example: network ip = 192.168.1.1"},
-		{"env, envs", "Show all global environment variables, aliases: envs"},
-		{"import", "Import a modules from a directory, example: import /path/to/modules (temp)"},
-		{"key=value", "Set global environment variable (persistent), example: timeout=10"},
-		{"key=?", "View global environment variable value, example: timeout=?"},
-		{"create <name> [type]", "Create a new module (python/bash), example: create mymodule python"},
-		{"edit <module>", "Edit module files, example: edit mymodule"},
-		{"delete <module>", "Delete a module, example: delete mymodule"},
+		// ──────────────────────────────
+		// Core Commands
+		// ──────────────────────────────
+		{"help, h, ?", "Show this help message (aliases: h, ?)"},
+		{"list, ls", "List all available modules (alias: ls)"},
+		{"search <keyword>", "Search modules by name/tag/description (ex: search network)"},
+		{"info <module>", "Show detailed info about a module (ex: info network)"},
+		{"<module>!", "Quick view module options & usage (ex: network!)"},
+		{"run <module> [args...]", "Execute module with arguments (ex: run network ip=192.168.1.1)"},
+		{"<module> [args...]", "Shorthand run: module arg=value (ex: network ip=192.168.1.1)"},
+		{"env, envs", "Display all global environment variables (alias: envs)"},
+		{"key=value", "Set persistent global environment variable (ex: timeout=30)"},
+		{"key=?", "View value of a global variable (ex: timeout=?)"},
+		{"create <name> [python|bash]", "Create new module (ex: create exploit python)"},
+		{"edit <module>", "Edit module source code (ex: edit myexploit)"},
+		{"delete, rm <module>", "Delete a module (ex: delete myexploit)"},
 		{"history", "Show command history"},
-		{"clear", "Clear screen, aliases: cls"},
-		{"exit, quit, q", "Exit framework, aliases: quit, q"},
+		{"clear, cls", "Clear the terminal screen (alias: cls)"},
+		{"refresh, reload", "Reload/refresh all modules from disk"},
+		{"exit, quit, q", "Exit the framework (aliases: quit, q)"},
+
+		// ──────────────────────────────
+		// Macros & Shortcuts
+		// ──────────────────────────────
+		{"#def name |param1:must,param2,...| -> command",
+			"Define custom macro (supports required params with :must)"},
+		{"#define ...", "Same as #def (alternative syntax)"},
+		{"#echo text", "Print text (built-in)"},
+		{"#if condition -> command", "Simple conditional execution (condition: true/1/yes)"},
+		{"#pwd", "Show current working directory (built-in)"},
+		{"#whoami", "Show current username (built-in)"},
+		{"#date", "Show current date/time (built-in)"},
+		{"#clear, #cls", "Clear screen (built-in)"},
+		{"#value $VAR", "Show value of environment variable (built-in)"},
+
+		// Examples of macro usage
+		{"#mycommand value", "Run user-defined macro with positional arg"},
+		{"#mycommand param=\"value\"", "Run with named parameter"},
+		{"#mycommand(param=\"value\")", "Run with parentheses style"},
 	}
 
 	for _, cmd := range commands {

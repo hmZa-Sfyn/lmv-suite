@@ -1,29 +1,32 @@
 package cli
 
 import (
+	"bytes"
 	"fmt"
+	"net"
 	"os"
-	"path/filepath"
+	"os/user"
+	"regexp"
 	"strconv"
 	"strings"
+	"time"
 
 	"lanmanvan/core"
 )
 
-type TEMP_Module struct {
-	Name string
-	Path string
-	Type string // "python", "bash", etc
-}
-
 // CLI manages the interactive command-line interface
 type CLI struct {
-	manager     *core.ModuleManager
-	running     bool
-	history     []string
-	envMgr      *EnvironmentManager
-	logger      *Logger
-	tempModules map[string]TEMP_Module
+	manager *core.ModuleManager
+	running bool
+	history []string
+	envMgr  *EnvironmentManager
+	logger  *Logger
+
+	//v1.5 #macros
+	macros        map[string]string
+	macroParams   map[string][]string
+	macroRequired map[string]map[string]bool
+	builtinMacros map[string]bool
 }
 
 // NewCLI creates a new CLI instance
@@ -34,6 +37,12 @@ func NewCLI(modulesDir string) *CLI {
 		history: make([]string, 0),
 		envMgr:  NewEnvironmentManager(),
 		logger:  NewLogger(),
+
+		//v1.5
+		macros:        make(map[string]string),
+		macroParams:   make(map[string][]string),
+		macroRequired: make(map[string]map[string]bool),
+		builtinMacros: make(map[string]bool),
 	}
 }
 
@@ -48,8 +57,22 @@ func (cli *CLI) Start(banner__ bool) error {
 	}
 	cli.setupSignalHandler()
 
-	// temp modules
-	cli.tempModules = make(map[string]TEMP_Module)
+	///////////////////////////////////
+	// v1.5
+
+	// In your CLI initialization (NewCLI or similar):
+	cli.macros = make(map[string]string)
+	cli.macroParams = make(map[string][]string)
+	cli.macroRequired = make(map[string]map[string]bool)
+	cli.builtinMacros = map[string]bool{
+		"echo":   true,
+		"if":     true,
+		"else":   true,
+		"define": true,
+		"def":    true,
+	}
+
+	// END v1.5
 
 	// Create readline instance with history support
 	rl, err := cli.getReadlineInstance()
@@ -123,57 +146,281 @@ func (cli *CLI) IdleStart(banner__ bool, command__ string) error {
 }
 
 // ExecuteCommand processes user commands
+
+// handleBuiltinMacro returns true if the macro was handled (built-in), false otherwise
+func (cli *CLI) handleBuiltinMacro(macroName string, parts []string, fullInput string) bool {
+	switch macroName {
+	case "echo":
+		if len(parts) > 1 {
+			fmt.Println(strings.Join(parts[1:], " "))
+		} else {
+			fmt.Println()
+		}
+		return true
+
+	case "if":
+		if len(parts) < 4 || parts[2] != "->" {
+			core.PrintError("Usage: #if condition -> command")
+			return true
+		}
+		condition := strings.ToLower(parts[1])
+		if condition == "true" || condition == "1" || condition == "yes" || condition == "on" {
+			cmd := strings.Join(parts[3:], " ")
+			cli.ExecuteCommand(cmd)
+		}
+		return true
+
+	case "else":
+		// Mostly placeholder — useful mainly in multi-line macro definitions
+		core.PrintInfo("#else is only meaningful inside macro bodies or scripts")
+		return true
+
+	case "pwd":
+		dir, _ := os.Getwd()
+		fmt.Println(core.Color("green", dir))
+		return true
+
+	case "whoami":
+		u, _ := user.Current()
+		fmt.Println(core.Color("cyan", u.Username))
+		return true
+
+	case "date":
+		fmt.Println(time.Now().Format("2006-01-02 15:04:05 MST"))
+		return true
+
+	case "clear", "cls":
+		cli.ClearScreen()
+		return true
+
+	case "value":
+		if len(parts) > 1 {
+			val, exists := cli.envMgr.Get(parts[1])
+			if exists {
+				fmt.Println(val)
+			} else {
+				core.PrintWarning(fmt.Sprintf("No value for %s", parts[1]))
+			}
+		} else {
+			core.PrintError("Usage: #value $var")
+		}
+		return true
+
+	// You can easily add more built-ins here in the future
+	// case "cd":
+	// case "sleep":
+	// case "help":
+
+	default:
+		return false // not a built-in → try user-defined
+	}
+}
+
 func (cli *CLI) ExecuteCommand(input string) {
-	// Handle for loops: for VAR in START..END -> COMMAND
+	input = strings.TrimSpace(input)
+	if input == "" {
+		return
+	}
+
+	// ──────────────────────────────────────────────
+	// MACRO HANDLING
+	// ──────────────────────────────────────────────
+	if strings.HasPrefix(input, "#") {
+		// Normalize multiple spaces
+		normalized := regexp.MustCompile(`\s+`).ReplaceAllString(input, " ")
+		parts := strings.Fields(normalized)
+
+		// Macro definition (#def or #define)
+		if len(parts) >= 4 && (parts[0] == "#def" || parts[0] == "#define") {
+			macroName := parts[1]
+
+			// Find arrow
+			arrowIdx := -1
+			for i, p := range parts {
+				if p == "->" {
+					arrowIdx = i
+					break
+				}
+			}
+
+			if arrowIdx == -1 || arrowIdx < 3 {
+				core.PrintError("Usage: #def name |param1:must,param2,...| -> command")
+				return
+			}
+
+			// Parameters section
+			paramSection := strings.Join(parts[2:arrowIdx], " ")
+			if !strings.HasPrefix(paramSection, "|") || !strings.HasSuffix(paramSection, "|") {
+				core.PrintError("Parameters must be enclosed in | |")
+				return
+			}
+
+			paramSection = strings.Trim(paramSection, "| ")
+			var params []string
+			required := make(map[string]bool)
+
+			if paramSection != "" {
+				for _, p := range strings.Split(paramSection, ",") {
+					trimmed := strings.TrimSpace(p)
+					if trimmed == "" {
+						continue
+					}
+
+					name := trimmed
+					isRequired := false
+					if strings.HasSuffix(trimmed, ":must") {
+						name = strings.TrimSuffix(trimmed, ":must")
+						name = strings.TrimSpace(name)
+						isRequired = true
+					}
+
+					if name != "" {
+						params = append(params, name)
+						if isRequired {
+							required[name] = true
+						}
+					}
+				}
+			}
+
+			commandTemplate := strings.Join(parts[arrowIdx+1:], " ")
+
+			// Save macro
+			cli.macros[macroName] = commandTemplate
+			cli.macroParams[macroName] = params
+			cli.macroRequired[macroName] = required
+
+			msg := fmt.Sprintf("Macro #%s defined with params [%s]", macroName, strings.Join(params, ", "))
+			if len(required) > 0 {
+				var req []string
+				for k := range required {
+					req = append(req, k)
+				}
+				msg += fmt.Sprintf(" (required: %s)", strings.Join(req, ", "))
+			}
+			core.PrintSuccess(msg)
+			return
+		}
+
+		// Macro call
+		macroName := strings.TrimPrefix(parts[0], "#")
+		if macroName == "" {
+			core.PrintError("Invalid macro name")
+			return
+		}
+
+		// First try built-in macros
+		if cli.handleBuiltinMacro(macroName, parts, input) {
+			return
+		}
+
+		// Then try user-defined macro
+		template, exists := cli.macros[macroName]
+		if !exists {
+			core.PrintError(fmt.Sprintf("Unknown macro: #%s", macroName))
+			return
+		}
+
+		paramsList := cli.macroParams[macroName]
+		requiredMap := cli.macroRequired[macroName]
+
+		// Extract arguments
+		rawArgs := strings.TrimSpace(input[len(parts[0]):])
+		if strings.HasPrefix(rawArgs, "(") && strings.HasSuffix(rawArgs, ")") {
+			rawArgs = strings.Trim(rawArgs, "() ")
+		}
+
+		argParts := strings.Fields(rawArgs)
+		argMap := make(map[string]string)
+		positionalIndex := 0
+
+		for _, arg := range argParts {
+			arg = strings.Trim(arg, "\"'")
+			if strings.Contains(arg, "=") {
+				kv := strings.SplitN(arg, "=", 2)
+				if len(kv) == 2 {
+					key := strings.TrimSpace(kv[0])
+					value := strings.TrimSpace(kv[1])
+					argMap[key] = value
+				}
+			} else if positionalIndex < len(paramsList) {
+				argMap[paramsList[positionalIndex]] = arg
+				positionalIndex++
+			}
+		}
+
+		// Check required parameters
+		var missing []string
+		for param, must := range requiredMap {
+			if must && argMap[param] == "" {
+				missing = append(missing, param)
+			}
+		}
+
+		if len(missing) > 0 {
+			core.PrintError(fmt.Sprintf(
+				"Missing required parameter(s) for #%s: %s",
+				macroName, strings.Join(missing, ", ")))
+			return
+		}
+
+		// Build final command
+		cmd := template
+		for param, value := range argMap {
+			cmd = strings.ReplaceAll(cmd, "$"+param, value)
+		}
+
+		fmt.Printf("→ %s\n", cmd)
+		cli.ExecuteCommand(cmd)
+		return
+	}
+
+	// ──────────────────────────────────────────────
+	// Everything else (for loops, pipes, env vars, modules, shell, etc.)
+	// ──────────────────────────────────────────────
+
+	// for loops
 	if strings.HasPrefix(input, "for ") && strings.Contains(input, " in ") && strings.Contains(input, " -> ") {
 		cli.executeForLoop(input)
 		return
 	}
 
-	// Handle pipe syntax: cmd1 |> cmd2 |> cmd3
+	// pipes
 	if strings.Contains(input, "|>") {
 		cli.executePipedCommands(input)
 		return
 	}
 
-	// Handle global environment variable syntax (key=value or key=?)
+	// env var set / view
 	if strings.Contains(input, "=") && !strings.Contains(input, " ") {
 		parts := strings.SplitN(input, "=", 2)
 		if len(parts) == 2 {
 			key := strings.TrimSpace(parts[0])
-			value := strings.TrimSpace(parts[1])
-
-			// Check if it's a view operation (key=?)
-			if value == "?" {
-				if val, exists := cli.envMgr.Get(key); exists {
-					fmt.Println()
-					fmt.Printf("   %s = %s\n", core.Color("cyan", key), core.Color("green", val))
-					fmt.Println()
+			val := strings.TrimSpace(parts[1])
+			if val == "?" {
+				if v, ok := cli.envMgr.Get(key); ok {
+					fmt.Printf("   %s = %s\n", core.Color("cyan", key), core.Color("green", v))
 				} else {
-					core.PrintWarning(fmt.Sprintf("Environment variable '%s' not set, skipping...", key))
-					fmt.Println()
+					core.PrintWarning("Variable '" + key + "' not set")
 				}
 				return
 			}
-
-			// Set environment variable
-			if err := cli.envMgr.Set(key, value); err != nil {
-				core.PrintError(fmt.Sprintf("Failed to set environment variable: %v, skipping...", err))
+			if err := cli.envMgr.Set(key, val); err != nil {
+				core.PrintError("Failed to set variable: " + err.Error())
 				return
 			}
-			fmt.Println()
-			core.PrintSuccess(fmt.Sprintf("Set %s = %s", key, value))
-			fmt.Println()
+			core.PrintSuccess(fmt.Sprintf("Set %s = %s", key, val))
 			return
 		}
 	}
 
-	// Handle shell commands
+	// shell command
 	if strings.HasPrefix(input, "$") {
 		cli.ExecuteShellCommand(input)
 		return
 	}
 
+	// regular commands
 	parts := strings.Fields(input)
 	if len(parts) == 0 {
 		return
@@ -193,37 +440,37 @@ func (cli *CLI) ExecuteCommand(input string) {
 		if len(args) > 0 {
 			cli.SearchModules(strings.Join(args, " "))
 		} else {
-			core.PrintError("Usage: search <keyword> ... example: search network")
+			core.PrintError("Usage: search <keyword>")
 		}
 	case "info":
 		if len(args) > 0 {
 			cli.ShowModuleInfo(args[0], 1)
 		} else {
-			core.PrintError("Usage: info <module_name> ... example: info network")
+			core.PrintError("Usage: info <module>")
 		}
 	case "run":
 		if len(args) > 0 {
 			cli.RunModule(args[0], args[1:])
 		} else {
-			core.PrintError("Usage: run <module_name> [args...] ... example: run network target_network=$target_network_suffix port=80")
+			core.PrintError("Usage: run <module> [args...]")
 		}
 	case "create", "new":
 		if len(args) > 0 {
 			cli.CreateModule(args[0], args[1:])
 		} else {
-			core.PrintError("Usage: create <module_name> [python|bash] ... example: create mymodule python")
+			core.PrintError("Usage: create <name> [python|bash]")
 		}
 	case "edit":
 		if len(args) > 0 {
 			cli.EditModule(args[0])
 		} else {
-			core.PrintError("Usage: edit <module_name> ... example: edit mymodule")
+			core.PrintError("Usage: edit <module>")
 		}
 	case "delete", "remove", "rm":
 		if len(args) > 0 {
 			cli.DeleteModule(args[0])
 		} else {
-			core.PrintError("Usage: delete <module_name> ... example: delete mymodule")
+			core.PrintError("Usage: delete <module>")
 		}
 	case "history":
 		cli.PrintHistory()
@@ -231,79 +478,18 @@ func (cli *CLI) ExecuteCommand(input string) {
 		cli.ClearScreen()
 	case "refresh", "reload":
 		cli.RefreshModules()
-	case "import", "include":
-		if len(args) == 1 {
-			cli.ImportModules(args[0])
-		} else {
-			core.PrintError("Usage: import /path/to/modules")
-		}
 	case "exit", "quit", "q":
 		cli.running = false
-		fmt.Println()
-		core.PrintSuccess("Goodbye! See you next time.")
-		fmt.Println()
+		core.PrintSuccess("Goodbye!")
+		return
 	default:
-		// Check if command ends with ! (show module info)
 		if strings.HasSuffix(cmd, "!") {
 			moduleName := strings.TrimSuffix(cmd, "!")
 			cli.ShowModuleInfo(moduleName, 0)
 		} else {
-			// Try to run as a module if command is not recognized
 			cli.RunModule(cmd, args)
 		}
 	}
-}
-
-func (cli *CLI) ImportModules(dir string) {
-	info, err := os.Stat(dir)
-	if err != nil || !info.IsDir() {
-		core.PrintError("Invalid module directory")
-		return
-	}
-
-	entries, err := os.ReadDir(dir)
-	if err != nil {
-		core.PrintError("Failed to read module directory")
-		return
-	}
-
-	count := 0
-
-	for _, e := range entries {
-		if !e.IsDir() {
-			continue
-		}
-
-		modulePath := filepath.Join(dir, e.Name())
-		moduleType := detectModuleType(modulePath)
-		if moduleType == "" {
-			continue
-		}
-
-		cli.tempModules[e.Name()] = TEMP_Module{
-			Name: e.Name(),
-			Path: modulePath,
-			Type: moduleType,
-		}
-		count++
-	}
-
-	if count == 0 {
-		core.PrintWarning("No valid modules found")
-		return
-	}
-
-	core.PrintSuccess(fmt.Sprintf("Imported %d modules (temporary)", count))
-}
-
-func detectModuleType(dir string) string {
-	if _, err := os.Stat(filepath.Join(dir, "run.py")); err == nil {
-		return "python"
-	}
-	if _, err := os.Stat(filepath.Join(dir, "run.sh")); err == nil {
-		return "bash"
-	}
-	return ""
 }
 
 // GetModuleManager returns the module manager instance
@@ -353,90 +539,408 @@ func (cli *CLI) RefreshModules() {
 	moduleCount := len(modules)
 
 	fmt.Println()
-	core.PrintSuccess(fmt.Sprintf("✓ Modules refreshed successfully! Loaded %d module(s)", moduleCount))
+	core.PrintSuccess(fmt.Sprintf("Modules refreshed successfully! Loaded %d module(s)", moduleCount))
 	fmt.Println()
 
 	// Display summary of loaded modules
 	if moduleCount > 0 {
 		fmt.Println(core.NmapBox("Loaded Modules"))
 		for i, module := range modules {
-			status := "✓"
+			status := ""
 			fmt.Printf("   [%d] %s %s\n", i+1, status, core.Color("cyan", module.Name))
 		}
 		fmt.Println()
 	}
 }
 
-// executeForLoop handles for loop syntax: for VAR in START..END -> COMMAND
+// Iterator represents something that can produce values one by one
+type Iterator interface {
+	Next() (string, bool) // value, ok
+	Len() int             // total expected items (for progress)
+	Close() error         // optional cleanup
+}
+
 func (cli *CLI) executeForLoop(input string) {
-	// Parse: for VAR in START..END -> COMMAND
-	forIdx := strings.Index(input, "for ")
-	inIdx := strings.Index(input, " in ")
-	arrowIdx := strings.Index(input, " -> ")
+	// Supported syntaxes:
+	// for $x in 1..100 -> command
+	// for x in a..z -> command
+	// for ip in 192.168.1.1..192.168.1.50 -> ping $ip
+	// for c in a..z+A..Z+0..9 -> echo $c
+	// for user in admin|root|guest -> hydra -l $user ...
 
-	if forIdx == -1 || inIdx == -1 || arrowIdx == -1 {
-		core.PrintError("Invalid for loop syntax. Use: for VAR in 0..256 -> COMMAND")
+	input = strings.TrimSpace(input)
+
+	// Flexible regex - supports both $var and var
+	re := regexp.MustCompile(`(?i)^for\s+(?:\$?(\w+))\s+(?:in\s+)?(.+?)\s*[-=]{1,2}>\s*(.+)$`)
+	matches := re.FindStringSubmatch(input)
+	if len(matches) != 4 {
+		core.PrintError("Invalid for-loop syntax.\nExamples:\n  for $x in 1..100 -> echo $x\n  for ip in 192.168.1.1..50 -> ping $ip\n  for c in a..z+A..Z -> echo $c")
 		return
 	}
 
-	varName := strings.TrimSpace(input[forIdx+4 : inIdx])
-	rangeStr := strings.TrimSpace(input[inIdx+4 : arrowIdx])
-	command := strings.TrimSpace(input[arrowIdx+4:])
+	varName := matches[1]
+	source := strings.TrimSpace(matches[2])
+	command := strings.TrimSpace(matches[3])
 
-	// Parse range: START..END
-	rangeParts := strings.Split(rangeStr, "..")
-	if len(rangeParts) != 2 {
-		core.PrintError("Invalid range syntax. Use: 0..256")
+	iter, err := parseRangeSource(source)
+	if err != nil {
+		E_msg := "Cannot parse range: " + err.Error() + "\nSource was: " + source + ""
+		core.PrintError(E_msg)
 		return
 	}
+	defer iter.Close()
 
-	startStr := strings.TrimSpace(rangeParts[0])
-	endStr := strings.TrimSpace(rangeParts[1])
-
-	start, errStart := strconv.Atoi(startStr)
-	end, errEnd := strconv.Atoi(endStr)
-
-	if errStart != nil || errEnd != nil {
-		core.PrintError("Range must contain valid integers")
+	total := iter.Len()
+	if total == 0 {
+		core.PrintWarning("Empty range - nothing to do")
 		return
 	}
 
 	fmt.Println()
-	core.PrintInfo(fmt.Sprintf("Executing loop: for %s in %d..%d", varName, start, end))
+	core.PrintInfo(fmt.Sprintf("Loop: %s ∈ %s  (%d items)", varName, source, total))
 	fmt.Println()
 
 	results := []string{}
-	for i := start; i <= end; i++ {
-		// Substitute variable in command
-		expandedCmd := strings.ReplaceAll(command, "$"+varName, fmt.Sprintf("%d", i))
+	count := 0
 
-		// Show what we're executing
-		fmt.Printf("  [%d/%d] Executing: %s\n", i-start+1, end-start+1, expandedCmd)
+	for {
+		value, ok := iter.Next()
+		if !ok {
+			break
+		}
+		count++
 
-		// Execute the command
-		if strings.Contains(expandedCmd, "|>") {
-			// For pipes, capture output
-			result := cli.executePipedCommandsForLoop(expandedCmd)
-			results = append(results, result)
-		} else {
-			// For modules, execute normally
-			parts := strings.Fields(expandedCmd)
-			if len(parts) > 0 {
-				cli.ExecuteCommand(expandedCmd)
+		// Support both $var and ${var}
+		expanded := regexp.MustCompile(`\$\{`+regexp.QuoteMeta(varName)+`\}|\$`+regexp.QuoteMeta(varName)).
+			ReplaceAllString(command, value)
+
+		fmt.Printf("  [%3d/%3d] → %s\n", count, total, expanded)
+
+		var result string
+		if strings.Contains(expanded, "|>") {
+			result = cli.executePipedCommandsForLoop(expanded)
+			if result != "" {
+				results = append(results, result)
 			}
+		} else {
+			cli.ExecuteCommand(expanded)
 		}
 	}
 
-	// Display results if any were captured
 	if len(results) > 0 {
 		fmt.Println()
-		core.PrintSuccess("Loop Results:")
-		for i, result := range results {
-			fmt.Printf("   [%d] %s\n", i, result)
+		core.PrintSuccess("Collected results (" + string(len(results)) + "):")
+		for i, res := range results {
+			fmt.Printf("  [%2d] %s\n", i+1, strings.TrimSpace(res))
 		}
 		fmt.Println()
 	}
 }
+
+// parseRangeSource returns an iterator for different kinds of ranges
+func parseRangeSource(s string) (Iterator, error) {
+	s = strings.TrimSpace(s)
+
+	// 1. List style: item1|item2|item3
+	if strings.Contains(s, "|") {
+		items := strings.Split(s, "|")
+		cleanItems := make([]string, 0, len(items))
+		for _, item := range items {
+			trimmed := strings.TrimSpace(item)
+			if trimmed != "" {
+				cleanItems = append(cleanItems, trimmed)
+			}
+		}
+		return &listIterator{items: cleanItems}, nil
+	}
+
+	// 2. Multiple ranges with + : a..z+A..Z+0..9
+	if strings.Contains(s, "+") {
+		parts := strings.Split(s, "+")
+		iterators := make([]Iterator, 0, len(parts))
+		for _, part := range parts {
+			it, err := parseSingleRange(strings.TrimSpace(part))
+			if err != nil {
+				return nil, fmt.Errorf("invalid part %q: %v", part, err)
+			}
+			iterators = append(iterators, it)
+		}
+		return newChainIterator(iterators...), nil
+	}
+
+	// 3. Single range
+	return parseSingleRange(s)
+}
+
+// ────────────────────────────────────────────────────────────────────────────────
+// Chain Iterator (for a..z + 0..9 + !@# style)
+// ────────────────────────────────────────────────────────────────────────────────
+
+type chainIterator struct {
+	iterators []Iterator
+	current   int
+}
+
+func newChainIterator(iters ...Iterator) Iterator {
+	return &chainIterator{
+		iterators: iters,
+		current:   0,
+	}
+}
+
+func (it *chainIterator) Next() (string, bool) {
+	for it.current < len(it.iterators) {
+		val, ok := it.iterators[it.current].Next()
+		if ok {
+			return val, true
+		}
+		it.current++
+	}
+	return "", false
+}
+
+func (it *chainIterator) Len() int {
+	total := 0
+	for _, i := range it.iterators {
+		total += i.Len()
+	}
+	return total
+}
+
+func (it *chainIterator) Close() error {
+	for _, i := range it.iterators {
+		_ = i.Close() // best effort
+	}
+	return nil
+}
+
+// ────────────────────────────────────────────────────────────────────────────────
+// IP Range Iterator (full IPs: 192.168.1.1 .. 192.168.1.50)
+// ────────────────────────────────────────────────────────────────────────────────
+
+type ipRangeIterator struct {
+	start net.IP
+	end   net.IP
+	curr  net.IP
+}
+
+func newIPRangeIterator(start, end net.IP) Iterator {
+	// Make copies because net.IP is slice
+	curr := make(net.IP, len(start))
+	copy(curr, start)
+
+	return &ipRangeIterator{
+		start: start,
+		end:   end,
+		curr:  curr,
+	}
+}
+
+func (it *ipRangeIterator) Next() (string, bool) {
+	if bytes.Compare(it.curr, it.end) > 0 {
+		return "", false
+	}
+
+	result := it.curr.String()
+
+	// Increment IP
+	for i := len(it.curr) - 1; i >= 0; i-- {
+		it.curr[i]++
+		if it.curr[i] > 0 {
+			break
+		}
+		// carry over
+		it.curr[i] = 0
+	}
+
+	return result, true
+}
+
+func (it *ipRangeIterator) Len() int {
+	// Very rough estimate - good enough for progress bar
+	diff := ipToInt(it.end) - ipToInt(it.start)
+	if diff < 0 {
+		return 0
+	}
+	return int(diff) + 1
+}
+
+func (it *ipRangeIterator) Close() error { return nil }
+
+// Helper: IPv4 only!
+func ipToInt(ip net.IP) int64 {
+	ip = ip.To4()
+	if ip == nil {
+		return 0
+	}
+	return int64(ip[0])<<24 | int64(ip[1])<<16 | int64(ip[2])<<8 | int64(ip[3])
+}
+
+// ────────────────────────────────────────────────────────────────────────────────
+// Partial IP Range (last octet only)  e.g. 192.168.1.10..192.168.1.50
+// ────────────────────────────────────────────────────────────────────────────────
+
+type partialIPRangeIterator struct {
+	prefix string
+	start  int
+	end    int
+	curr   int
+}
+
+func newPartialIPRangeIterator(startStr, endStr string) (Iterator, error) {
+	// Assume format like: 192.168.1.   or  10.0.0.
+	// We expect startStr and endStr to be last octet numbers
+
+	// Very naive version - you can make it more robust later
+	start, err1 := strconv.Atoi(startStr)
+	if err1 != nil {
+		return nil, fmt.Errorf("invalid start octet: %v", err1)
+	}
+	end, err2 := strconv.Atoi(endStr)
+	if err2 != nil {
+		return nil, fmt.Errorf("invalid end octet: %v", err2)
+	}
+
+	// Guess prefix from startStr if possible
+	prefix := ""
+	if dot := strings.LastIndex(startStr, "."); dot != -1 {
+		prefix = startStr[:dot+1]
+	}
+
+	return &partialIPRangeIterator{
+		prefix: prefix,
+		start:  start,
+		end:    end,
+		curr:   start,
+	}, nil
+}
+
+func (it *partialIPRangeIterator) Next() (string, bool) {
+	if it.curr > it.end {
+		return "", false
+	}
+	ip := fmt.Sprintf("%s%d", it.prefix, it.curr)
+	it.curr++
+	return ip, true
+}
+
+func (it *partialIPRangeIterator) Len() int {
+	return it.end - it.curr + 1
+}
+
+func (it *partialIPRangeIterator) Close() error { return nil }
+
+// ────────────────────────────────────────────────────────────────────────────────
+// Character Range Iterator   a..z    or   0..9
+// ────────────────────────────────────────────────────────────────────────────────
+
+type charRangeIterator struct {
+	current byte
+	end     byte
+}
+
+func newCharRangeIterator(start, end byte) Iterator {
+	return &charRangeIterator{
+		current: start,
+		end:     end,
+	}
+}
+
+func (it *charRangeIterator) Next() (string, bool) {
+	if it.current > it.end {
+		return "", false
+	}
+	val := string(it.current)
+	it.current++
+	return val, true
+}
+
+func (it *charRangeIterator) Len() int {
+	return int(it.end - it.current + 1)
+}
+
+func (it *charRangeIterator) Close() error { return nil }
+
+func parseSingleRange(s string) (Iterator, error) {
+	if strings.Contains(s, "..") {
+		parts := strings.SplitN(s, "..", 2)
+		if len(parts) != 2 {
+			return nil, fmt.Errorf("invalid .. range format")
+		}
+		startStr, endStr := strings.TrimSpace(parts[0]), strings.TrimSpace(parts[1])
+
+		// Try IP range first
+		startIP := net.ParseIP(startStr)
+		if startIP != nil {
+			endIP := net.ParseIP(endStr)
+			if endIP != nil {
+				return newIPRangeIterator(startIP, endIP), nil
+			}
+			// Maybe last octet only?
+			if strings.HasPrefix(startStr, "192.168.") || strings.Contains(startStr, ".") {
+				return newPartialIPRangeIterator(startStr, endStr)
+			}
+		}
+
+		// Numeric range
+		start, err1 := strconv.Atoi(startStr)
+		end, err2 := strconv.Atoi(endStr)
+		if err1 == nil && err2 == nil {
+			return newNumericRangeIterator(start, end), nil
+		}
+
+		// Character range
+		if len(startStr) == 1 && len(endStr) == 1 {
+			return newCharRangeIterator(startStr[0], endStr[0]), nil
+		}
+	}
+
+	return nil, fmt.Errorf("unsupported range format: %s", s)
+}
+
+// ────────────────────────────────────────────────────────────────────────────────
+// Simple iterators implementations (you can put them in separate file)
+// ────────────────────────────────────────────────────────────────────────────────
+
+type listIterator struct {
+	items []string
+	idx   int
+}
+
+func (it *listIterator) Next() (string, bool) {
+	if it.idx >= len(it.items) {
+		return "", false
+	}
+	v := it.items[it.idx]
+	it.idx++
+	return v, true
+}
+func (it *listIterator) Len() int     { return len(it.items) }
+func (it *listIterator) Close() error { return nil }
+
+type numericRangeIterator struct {
+	current, end int
+}
+
+func newNumericRangeIterator(start, end int) *numericRangeIterator {
+	return &numericRangeIterator{current: start, end: end}
+}
+func (it *numericRangeIterator) Next() (string, bool) {
+	if it.current > it.end {
+		return "", false
+	}
+	v := fmt.Sprintf("%d", it.current)
+	it.current++
+	return v, true
+}
+func (it *numericRangeIterator) Len() int     { return it.end - it.current + 1 }
+func (it *numericRangeIterator) Close() error { return nil }
+
+// Add these yourself (similar style):
+// - newIPRangeIterator
+// - newPartialIPRangeIterator
+// - newCharRangeIterator
+// - newChainIterator (for + separated ranges)
 
 // executePipedCommandsForLoop handles pipes and returns output instead of printing
 func (cli *CLI) executePipedCommandsForLoop(input string) string {

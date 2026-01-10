@@ -35,7 +35,7 @@ fi
 
 # Copy repo_url.yaml to LANMANVAN_DIR for later use by lmv_module.py
 cp "$REPO_FILE" "$LANMANVAN_DIR/repo_url.yaml"
-echo "✓ Copied repo_url.yaml to $LANMANVAN_DIR"
+echo " Copied repo_url.yaml to $LANMANVAN_DIR"
 
 # Load repo URLs from repo_url.yaml using a simple parser (supports key: "url" format)
 declare -A REPOS
@@ -80,7 +80,7 @@ for name in "${!REPOS[@]}"; do
                 echo "Cloning $name..."
                 repo_tmp="$TMP_DIR/$name"
                 if git clone "$url" "$repo_tmp" 2>/dev/null; then
-                    echo "✓ Cloned $name successfully"
+                    echo " Cloned $name successfully"
                 else
                     red "✗ Failed to clone $url"
                     continue
@@ -94,7 +94,7 @@ for name in "${!REPOS[@]}"; do
 
                     mkdir -p "$dest_dir"
                     rsync -a "$module_dir/" "$dest_dir/"
-                    echo "✓ Copied module: $rel_dir"
+                    echo " Copied module: $rel_dir"
                 done
 
                 # Check if any module.yaml was found in this repo
@@ -125,7 +125,7 @@ done
 
 # Copy lmv_module.py to LANMANVAN_DIR
 cp "$LMV_MODULE_PY" "$LANMANVAN_DIR/lmv_module.py"
-echo "✓ Copied lmv_module.py to $LANMANVAN_DIR"
+echo " Copied lmv_module.py to $LANMANVAN_DIR"
 
 # Alias helper
 add_or_update_alias() {
@@ -150,8 +150,8 @@ for rc in "$HOME/.zshrc" "$HOME/.bashrc" "$HOME/.bash_profile" "$HOME/.zprofile"
     add_or_update_alias "$rc" "lmv_module" "python3 $LANMANVAN_DIR/lmv_module.py \"\$@\""
 done
 
-echo "✔ LanManVan installed successfully!"
-echo "✔ Binary: $BIN_DIR/lanmanvan"
-echo "✔ Modules directory: $MODULES_DEST"
-echo "✔ lmv_module.py copied and alias added"
-echo "✔ Reload your shell or run: source ~/.zshrc || source ~/.bashrc"
+echo " LanManVan installed successfully!"
+echo " Binary: $BIN_DIR/lanmanvan"
+echo " Modules directory: $MODULES_DEST"
+echo " lmv_module.py copied and alias added"
+echo " Reload your shell or run: source ~/.zshrc || source ~/.bashrc"

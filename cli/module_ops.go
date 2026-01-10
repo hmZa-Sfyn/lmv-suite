@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"regexp"
 	"strings"
@@ -18,46 +17,6 @@ import (
 // RunModule executes a module with provided arguments
 // RunModule executes a module with provided arguments
 func (cli *CLI) RunModule(moduleName string, args []string) {
-	// ---------------- TEMP MODULES ----------------
-	if tempMod, ok := cli.tempModules[moduleName]; ok {
-		fmt.Println()
-		core.PrintInfo(fmt.Sprintf("Executing temporary module '%s'...", core.Color("cyan", moduleName)))
-		fmt.Println()
-
-		var cmd *exec.Cmd
-
-		switch tempMod.Type {
-		case "python":
-			cmd = exec.Command("python3",
-				append([]string{filepath.Join(tempMod.Path, "run.py")}, args...)...)
-		case "bash":
-			cmd = exec.Command("bash",
-				append([]string{filepath.Join(tempMod.Path, "run.sh")}, args...)...)
-		default:
-			core.PrintError("Unsupported temporary module type")
-			return
-		}
-
-		cmd.Stdout = os.Stdout
-		cmd.Stderr = os.Stderr
-		cmd.Stdin = os.Stdin
-
-		start := time.Now()
-		err := cmd.Run()
-		duration := time.Since(start)
-
-		if err != nil {
-			core.PrintError(fmt.Sprintf("Execution failed after %s", duration))
-			return
-		}
-
-		core.PrintSuccess(fmt.Sprintf("Completed in %s", duration))
-		fmt.Println()
-		return
-	}
-
-	// ---------------- MANAGED MODULES ----------------
-
 	module, err := cli.manager.GetModule(moduleName)
 	if err != nil {
 		core.PrintError(fmt.Sprintf("%v", err))
